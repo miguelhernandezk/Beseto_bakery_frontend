@@ -3,9 +3,9 @@ import Calculator from "../components/Calculator";
 import Card from "../components/Card";
 import MainHeader from "../components/MainHeader";
 import ProductExamples from "../components/ProductExamples";
-import pastel_principal from "../assets/imgs/Home/pastel_principal.JPG";
-import gourmet from '../assets/imgs/Home/gourmet.JPG';
-import panaderia from '../assets/imgs/Home/panaderia.JPEG';
+import pastel_principal from "../assets/imgs/Home/pastel_principal.jpg";
+import gourmet from '../assets/imgs/Home/gourmet.jpg';
+import panaderia from '../assets/imgs/Home/panaderia.jpeg';
 import pastel_discover from "../assets/imgs/Home/pastel_discover.jpeg";
 import { FaFacebookF, FaInstagram, FaTiktok } from "react-icons/fa";
 
