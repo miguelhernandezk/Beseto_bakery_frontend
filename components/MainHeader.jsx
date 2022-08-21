@@ -1,8 +1,8 @@
 import React from "react";
 import { FaBars } from "react-icons/fa";
-import logo from '../assets/imgs/common/logo.png'
-import header_pastel from '../assets/imgs/Home/header_pastel.png';
-import main_header_bg from '../assets/imgs/common/main_header_bg.jpg';
+import logo from '../public/assets/imgs/common/logo.png'
+import header_pastel from '../public/assets/imgs/Home/header_pastel.png';
+import main_header_bg from '../public/assets/imgs/common/main_header_bg.jpg';
 
 const MainHeader = () => {
   return (

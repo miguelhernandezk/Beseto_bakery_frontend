@@ -1,11 +1,11 @@
 import React from 'react';
 import Card from './Card';
-import card1 from '../assets/imgs/Home/card1.jpg'
-import card2 from '../assets/imgs/Home/card2.jpg'
-import card3 from '../assets/imgs/Home/card3.jpg'
-import card4 from '../assets/imgs/Home/card4.jpg'
-import card5 from '../assets/imgs/Home/card5.jpg'
-import card6 from '../assets/imgs/Home/card6.jpg'
+import card1 from '../public/assets/imgs/Home/card1.jpg'
+import card2 from '../public/assets/imgs/Home/card2.jpg'
+import card3 from '../public/assets/imgs/Home/card3.jpg'
+import card4 from '../public/assets/imgs/Home/card4.jpg'
+import card5 from '../public/assets/imgs/Home/card5.jpg'
+import card6 from '../public/assets/imgs/Home/card6.jpg'
 
 const ProductExamples = () => {
     return (

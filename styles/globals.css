@@ -31,7 +31,7 @@ html{
 .info-container{
     top:0;
     left: 0;
-    background: no-repeat url(../assets/imgs/Home/wave.svg);
+    background: no-repeat url(../public/assets/imgs/Home/wave.svg);
     background-position: left bottom;
     background-size: 100%;
 }
@@ -45,7 +45,7 @@ html{
 }
 
 .calculator-container{
-    background-image: url(../assets/imgs/Home/background_calculator.jpg);
+    background-image: url(../public/assets/imgs/Home/background_calculator.jpg);
     /* Set a specific height */
     min-height: 375px;
 
