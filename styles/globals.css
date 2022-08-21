@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html{
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+}
+.wrapper{
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    perspective: 10px;
+}
+
+.parallax-container{
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    z-index: -1;
+}
+
+.background-header-image{
+    height: 100%;
+    width: 4800px;
+    position: absolute;
+    z-index: -4;
+    transform: translateZ(-3px) scale(1.4);
+}
+
+.info-container{
+    top:0;
+    left: 0;
+    background: no-repeat url(../assets/imgs/Home/wave.svg);
+    background-position: left bottom;
+    background-size: 100%;
+}
+
+.main-text .special-word{
+    color: #F6D9B6;
+}
+
+.darkened{
+    background: rgb(0,0,0,0.5);
+}
+
+.calculator-container{
+    background-image: url(../assets/imgs/Home/background_calculator.jpg);
+    /* Set a specific height */
+    min-height: 375px;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.radio-button-container{
+    display: block;
+    position: relative;
+    padding-left: 1.5rem;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.radioButton {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    height: 1rem;
+    width: 1rem;
+    background-color: white;
+}
+
+/* On mouse-over, add a grey background color */
+.radio-button-container:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the radio button is checked, add a brown background */
+  .radio-button-container input:checked ~ .checkmark {
+    background-color: #733315;
+  }
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the indicator (dot/circle) when checked */
+  .radio-button-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .radio-button-container .checkmark:after {
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+  }
+.calculator-heading{
+    background: rgb(0,0,0,0.5);
+}
