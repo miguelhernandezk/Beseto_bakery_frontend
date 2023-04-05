@@ -101,7 +101,7 @@ export default function SignIn() {
   return (
     <>
       <Head>
-        <title>Inicir sesión</title>
+        <title>Iniciar sesión</title>
       </Head>
       <ToastContainer
         position="top-right"

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { signIn, signOut } from 'next-auth/react';
 import {
   Stack,
   List,
@@ -19,12 +18,16 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 
 import logo from '../public/assets/imgs/common/xs/logo_xs.png';
+import { signOut } from '../services/auth';
 
 interface LoginLogoutProps {
   session: boolean;
 }
 
 function LoginLogout({ session }: LoginLogoutProps) {
+  const goToSignInPage = () => {
+    window.location.replace('/signin');
+  };
   if (session) {
     return (
       <Button
@@ -40,7 +43,7 @@ function LoginLogout({ session }: LoginLogoutProps) {
     <Button
       variant="contained"
       className="bg-beseto-bisque"
-      onClick={() => signIn()}
+      onClick={() => goToSignInPage()}
     >
       Iniciar sesión
     </Button>

@@ -16,6 +16,9 @@ const theme = createTheme({
     primary: {
       main: '#F6D9B6',
     },
+    secondary: {
+      main: '#733315',
+    },
   },
   breakpoints: {
     values: {
@@ -25,6 +28,9 @@ const theme = createTheme({
       lg: 1024,
       xl: 1200,
     },
+  },
+  components: {
+    MuiTextField: { defaultProps: { color: 'secondary' } },
   },
 });
 

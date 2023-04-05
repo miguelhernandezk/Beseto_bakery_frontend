@@ -30,7 +30,6 @@ export const login = async (
     const signinUser: UserSignin = data;
     if (data.acces_token) {
       localStorage.setItem('Beseto_token', data.acces_token);
-      alert('paso aquí');
       const response: ServicesResponse<User> = {
         error: false,
         data: signinUser.user,
@@ -75,4 +74,20 @@ export const signinStatus = async (): Promise<ServicesResponse> => {
   } catch (e) {
     return handleApiErrors(e);
   }
+};
+
+export const signOut = () => {
+  localStorage.removeItem('Beseto_token');
+  window.location.replace('/');
+};
+
+export const signinRedirect = (route?: string): boolean => {
+  const token: string | null = localStorage.getItem('Beseto_token');
+  if (!token) {
+    if (window.location.pathname !== '/signin') {
+      window.location.replace(route ? `/signin?next=${route}` : '/signin');
+    }
+    return true;
+  }
+  return false;
 };
