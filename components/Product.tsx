@@ -9,7 +9,14 @@ import {
   Stack,
 } from '@mui/material';
 
-function Product({ image, name, description, price }) {
+interface ProductProps {
+  image: string;
+  name: string;
+  description: string;
+  price: string;
+}
+
+function Product({ image, name, description, price }: ProductProps) {
   return (
     <Card className="w-full">
       <CardActionArea>

@@ -122,7 +122,7 @@ function Home() {
               </div>
               <figure className="w-64 sm:w-96 md:w-160 xl:w-1/2">
                 <Card
-                  dark="true"
+                  dark
                   category="Gourmet"
                   product="Pastel de doble chocolate"
                   linkSource={gourmet.src}
@@ -138,7 +138,7 @@ function Home() {
             >
               <figure className="w-64 sm:w-96 md:w-160 xl:w-1/2">
                 <Card
-                  dark="true"
+                  dark
                   category="Panadería"
                   product="Pan de dulce"
                   linkSource={panaderia.src}
