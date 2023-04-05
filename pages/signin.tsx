@@ -19,12 +19,12 @@ import { login, signinStatus } from '../services/auth';
 export default function SignIn() {
   const router = useRouter();
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [firstTime, setFirstTime] = useState<boolean>(true);
 
   /**
    *  Displays a success message if everything went right after logged in
    */
-  const notifySuccess = () => toast.success('Welcome back!');
+  const notifySuccess = (msg = 'Tarea realizada exitosamente') =>
+    toast.success(msg);
 
   /**
    * Displays an error message if something went wrong
@@ -49,10 +49,9 @@ export default function SignIn() {
   const handleSignInStatus = async (route?: string) => {
     const validSignInResponse = await signinStatus();
     if (validSignInResponse.error) {
-      console.log('algo salió mal');
-      console.log(validSignInResponse);
+      notifyError('No pudimos iniciar tu sesión');
     } else {
-      toast.success('Ya habías iniciado sesión');
+      notifySuccess('Ya habías iniciado sesión');
       router.push(route !== undefined ? route : '/');
     }
   };

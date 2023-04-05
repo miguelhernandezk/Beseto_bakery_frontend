@@ -1,6 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { LoginPayload } from '../interfaces/dtos/Login';
-import { Product } from '../interfaces/Product';
 import { ServicesResponse } from '../interfaces/Responses';
 import { User, UserSignin } from '../interfaces/User';
 import { handleApiErrors } from '../utils/handleApiErrors';
@@ -50,7 +49,6 @@ export const login = async (
       return response;
     }
   } catch (e) {
-    console.log(e);
     return handleApiErrors(e);
   }
 };

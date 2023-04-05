@@ -49,7 +49,6 @@ export const createProduct = async (
     };
     return response;
   } catch (e) {
-    console.log(e);
     return handleApiErrors(e);
   }
 };
