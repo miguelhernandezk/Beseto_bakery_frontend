@@ -114,7 +114,6 @@ export default function AdminSite() {
         />
         <TextField
           margin="normal"
-          required
           fullWidth
           name="flavor2"
           label="Sabor 2"
