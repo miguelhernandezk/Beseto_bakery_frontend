@@ -117,7 +117,7 @@ function Toolbar() {
   return (
     <Container>
       <Stack
-        // direction={{ xs: 'column', lg: 'row' }}
+        direction={{ xs: 'column', lg: 'row' }}
         className="justify-center lg:justify-between items-center p-4 z-100 w-full flex-col lg:flex-row"
       >
         <Link href="/">
