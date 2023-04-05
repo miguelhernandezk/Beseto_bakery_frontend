@@ -1,7 +1,7 @@
 module.exports = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -15,23 +15,24 @@ module.exports = {
         '2xl': '-0.5rem 0.5rem 0.4rem rgba(0, 0, 0, 0.5)',
       },
       backgroundImage: {
-        'footerImage': "url('/img/hero-pattern.svg')",
+        footerImage: "url('/img/hero-pattern.svg')",
       },
       width: {
-        '112': '28rem',
-        '128': '32rem',
-        '144': '36rem',
-        '160': '40rem',
-        '300': '75rem',
-      }
+        112: '28rem',
+        128: '32rem',
+        144: '36rem',
+        160: '40rem',
+        300: '75rem',
+      },
     },
     screens: {
-      'sm': '480px',
-      'md': '780px',
-      'lg': '1024px',
-      'xl': '1200px',
+      xs: '0px',
+      sm: '480px',
+      md: '780px',
+      lg: '1024px',
+      xl: '1200px',
       '2xl': '1536px',
-    }
+    },
   },
   plugins: [],
 };

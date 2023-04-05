@@ -5,7 +5,20 @@
 html{
     font-family: 'Poppins', sans-serif;
     scroll-behavior: smooth;
+    position: relative;
 }
+
+.header-bg{
+    background: url(../public/assets/imgs/common/main_header_bg.jpg);
+    height: 100%; 
+
+  /* Create the parallax scrolling effect */
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .wrapper{
     height: 100vh;
     overflow-y: auto;
@@ -37,7 +50,7 @@ html{
 }
 
 .main-text .special-word{
-    color: #F6D9B6;
+    color: rgb(246, 217, 182);
 }
 
 .darkened{
@@ -118,4 +131,8 @@ html{
   }
 .calculator-heading{
     background: rgb(0,0,0,0.5);
+}
+
+.height-650{
+    height: 650px;
 }
