@@ -1,22 +1,39 @@
-import { Container, Grid } from '@mui/material';
-import Product from './Product';
-import imageCake from '../public/assets/imgs/Home/card1.jpg';
+import { Container, Grid, Typography } from '@mui/material';
+import { getAllProducts } from '../services/products';
+import { Product } from '../interfaces/Product';
+import { useEffect, useState } from 'react';
+import ProductCard from './ProductCard';
 
 function BestSellers() {
-  const testArray = [1, 2, 3, 4, 5, 6];
+  const [products, setProducts] = useState<Product[]>();
+  const onSetProducts = async () => {
+    const productsResponse = await getAllProducts();
+    if (productsResponse.error) {
+      const hola = 'Do nothing';
+    } else {
+      setProducts(productsResponse.data);
+    }
+  };
+  useEffect(() => {
+    onSetProducts();
+  }, []);
   return (
     <Container className="py-4">
       <Grid container spacing={{ xs: 2, md: 4 }} columns={{ xs: 4, md: 12 }}>
-        {testArray.map((item) => (
-          <Grid key={item} item xs={4}>
-            <Product
-              image={imageCake.src}
-              name="Pastelito"
-              description="Delicioso pastel de tres leches"
-              price="$250.00"
-            />
-          </Grid>
-        ))}
+        {products !== undefined && products !== null ? (
+          products.map((product) => (
+            <Grid key={product._id} item xs={4}>
+              <ProductCard
+                image={product.picture[0]}
+                name={product.name}
+                description={product.description}
+                price={product.price}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Typography>No hay productos para mostrar</Typography>
+        )}
       </Grid>
     </Container>
   );

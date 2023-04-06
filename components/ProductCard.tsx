@@ -13,10 +13,10 @@ interface ProductProps {
   image: string;
   name: string;
   description: string;
-  price: string;
+  price: string | number;
 }
 
-function Product({ image, name, description, price }: ProductProps) {
+function ProductCard({ image, name, description, price }: ProductProps) {
   return (
     <Card className="w-full">
       <CardActionArea>
@@ -47,4 +47,4 @@ function Product({ image, name, description, price }: ProductProps) {
   );
 }
 
-export default Product;
+export default ProductCard;

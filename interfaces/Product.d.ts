@@ -1,5 +1,5 @@
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
   flavor1: string;
   flavor2: string | null | undefined;
