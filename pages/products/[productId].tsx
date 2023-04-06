@@ -183,7 +183,9 @@ function ProductPage() {
   return (
     <>
       <Head>
-        <title>Iniciar sesión</title>
+        <title>
+          {product !== undefined ? product?.name : 'Loading'} - Beseto
+        </title>
       </Head>
       <ToastContainer
         position="top-right"
@@ -313,7 +315,7 @@ function ProductPage() {
                       <TextField
                         sx={{ my: 1 }}
                         id="outlined-basic"
-                        value={editedDescripton}
+                        value={editedName}
                         label="Nuevo sabor principal"
                         variant="outlined"
                         onChange={onChangeEditDescriptionField}
