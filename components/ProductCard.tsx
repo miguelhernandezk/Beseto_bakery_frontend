@@ -39,7 +39,11 @@ function ProductCard({ _id, image, name, description, price }: ProductProps) {
           <Typography gutterBottom variant="h5" component="div">
             {name}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            className="h-28 overflow-hidden"
+          >
             {description}
           </Typography>
         </CardContent>
