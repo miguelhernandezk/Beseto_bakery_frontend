@@ -1,5 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { ProductDto } from '../interfaces/dtos/Product.dto';
+import {
+  createProductDto,
+  UpdateProductDto,
+} from '../interfaces/dtos/Product.dto';
 import { Product } from '../interfaces/Product';
 import { ServicesResponse } from '../interfaces/Responses';
 import { handleApiErrors } from '../utils/handleApiErrors';
@@ -41,7 +44,7 @@ export const getOneProduct = async (_id: string): Promise<ServicesResponse> => {
 };
 
 export const createProduct = async (
-  payload: ProductDto
+  payload: createProductDto
 ): Promise<ServicesResponse> => {
   try {
     const token = localStorage.getItem('Beseto_token');
@@ -58,10 +61,41 @@ export const createProduct = async (
     );
 
     // "data Type"
-    const userInfo: Product = data;
+    const productInfo: Product = data;
     const response: ServicesResponse<Product> = {
       error: false,
-      data: userInfo,
+      data: productInfo,
+      helperText: null,
+    };
+    return response;
+  } catch (e) {
+    return handleApiErrors(e);
+  }
+};
+
+export const updateProduct = async (
+  _id: string,
+  payload: UpdateProductDto
+): Promise<ServicesResponse> => {
+  try {
+    const token = localStorage.getItem('Beseto_token');
+    const config: AxiosRequestConfig = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const { data } = await axios.put(
+      `${backendUrl}/products/${_id}`,
+      payload,
+      config
+    );
+
+    // "data Type"
+    const productInfo: Product = data;
+    const response: ServicesResponse<Product> = {
+      error: false,
+      data: productInfo,
       helperText: null,
     };
     return response;

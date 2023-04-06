@@ -30,18 +30,7 @@ export default function SignIn() {
    * Displays an error message if something went wrong
    * @param {JSX.Element} msg - Message to be displayed
    */
-  const notifyError = (msg = 'Oops, something went wrong') =>
-    toast.error(
-      msg !== null && msg !== undefined ? (
-        msg
-      ) : (
-        <div>
-          There was an error logging in.
-          <br />
-          Please try again later.
-        </div>
-      )
-    );
+  const notifyError = (msg = 'Oops, something went wrong') => toast.error(msg);
 
   /**
    *  If already logged, redirects to previous page
