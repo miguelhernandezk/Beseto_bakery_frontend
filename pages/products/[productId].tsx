@@ -279,9 +279,18 @@ function ProductPage() {
                       </Button>
                     </Stack>{' '}
                     {product.tags !== null && product.tags?.length > 0 ? (
-                      <Stack direction="row" sx={{ my: 2 }} spacing={1}>
+                      <Stack
+                        direction="row"
+                        sx={{ my: 2 }}
+                        spacing={1}
+                        flexWrap="wrap"
+                      >
                         {product.tags.map((tag) => (
-                          <Chip key={`edit${tag}`} label={tag} />
+                          <Chip
+                            className="my-1"
+                            key={`edit${tag}`}
+                            label={tag}
+                          />
                         ))}
                       </Stack>
                     ) : null}
@@ -374,9 +383,15 @@ function ProductPage() {
                     {editedTags !== null &&
                     editedTags !== undefined &&
                     editedTags.length > 0 ? (
-                      <Stack direction="row" sx={{ my: 2 }} spacing={1}>
+                      <Stack
+                        direction="row"
+                        sx={{ my: 2 }}
+                        spacing={1}
+                        flexWrap="wrap"
+                      >
                         {editedTags.map((tag) => (
                           <Chip
+                            className="my-1"
                             key={tag}
                             label={tag}
                             onDelete={() => handleDeleteTag(tag)}
