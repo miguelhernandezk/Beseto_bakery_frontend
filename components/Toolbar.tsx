@@ -51,8 +51,26 @@ function LoginLogout({ session }: LoginLogoutProps) {
 }
 
 function Toolbar() {
+  const router = useRouter();
+
   const [openMenu, setOpenMenu] = useState(false);
   const [session, setSession] = useState<boolean>();
+  const navigationLinks = [
+    'inicio',
+    'nosotros',
+    'productos',
+    'tienda',
+    'carrito',
+  ];
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: unknown, newValue: unknown) => {
+    setValue(newValue as number);
+  };
+
+  const toggleDrawer = () => {
+    setOpenMenu(!openMenu);
+  };
 
   const handleGetSession = () => {
     const besetoToken = localStorage.getItem('Beseto_token');
@@ -63,23 +81,6 @@ function Toolbar() {
     )
       setSession(true);
     else setSession(false);
-  };
-
-  const router = useRouter();
-  const navigationLinks = [
-    'inicio',
-    'nosotros',
-    'productos',
-    'tienda',
-    'carrito',
-  ];
-  const [value, setValue] = useState(0);
-  const handleChange = (event: unknown, newValue: unknown) => {
-    setValue(newValue as number);
-  };
-
-  const toggleDrawer = () => {
-    setOpenMenu(!openMenu);
   };
 
   const list = (anchor: unknown) => (

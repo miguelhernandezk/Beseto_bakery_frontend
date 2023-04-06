@@ -209,12 +209,8 @@ function ProductPage() {
                   showStatus={false}
                 >
                   {product.picture.map((urlPicture) => (
-                    <div>
-                      <img
-                        key={`${product.name}${urlPicture}`}
-                        src={urlPicture}
-                        alt={product.name}
-                      />
+                    <div key={`${product.name}${urlPicture}`}>
+                      <img src={urlPicture} alt={product.name} />
                     </div>
                   ))}
                 </Carousel>
@@ -285,7 +281,7 @@ function ProductPage() {
                     {product.tags !== null && product.tags?.length > 0 ? (
                       <Stack direction="row" sx={{ my: 2 }} spacing={1}>
                         {product.tags.map((tag) => (
-                          <Chip label={tag} />
+                          <Chip key={`edit${tag}`} label={tag} />
                         ))}
                       </Stack>
                     ) : null}
@@ -381,6 +377,7 @@ function ProductPage() {
                       <Stack direction="row" sx={{ my: 2 }} spacing={1}>
                         {editedTags.map((tag) => (
                           <Chip
+                            key={tag}
                             label={tag}
                             onDelete={() => handleDeleteTag(tag)}
                           />
