@@ -90,7 +90,7 @@ export default function AdminSite() {
         picture: [picture],
         description: description,
         price: Number(price),
-        tags: [tags],
+        tags: tags.replace(/ /g, '').split(','),
         category: currentCategory,
       };
       const createProductResponse = await createProduct(payload);
