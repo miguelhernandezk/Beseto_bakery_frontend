@@ -69,6 +69,7 @@ export default function AdminSite() {
     const description = data.get('description')?.toString();
     const price = data.get('price')?.toString();
     const tags = data.get('tags')?.toString();
+
     if (
       name !== undefined &&
       flavor1 !== undefined &&
@@ -90,7 +91,7 @@ export default function AdminSite() {
         picture: [picture],
         description: description,
         price: Number(price),
-        tags: tags.trim().split(','),
+        tags: tags.split(',').map((tag) => tag.trim()),
         category: currentCategory,
       };
       const createProductResponse = await createProduct(payload);
