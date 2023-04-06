@@ -118,50 +118,52 @@ function Toolbar() {
   }, [router.isReady, router.asPath]);
 
   return (
-    <Container>
-      <Stack
-        direction={{ xs: 'column', lg: 'row' }}
-        className="justify-center lg:justify-between items-center p-4 z-100 w-full flex-col lg:flex-row"
-      >
-        <Link href="/">
-          <img
-            className="hover:cursor-pointer"
-            src={logo.src}
-            alt="logo de beseto"
-          />
-        </Link>
-        <IconButton
-          aria-label="Mostrar Menú"
-          className="block lg:hidden"
-          onClick={toggleDrawer}
+    <Box sx={{ background: 'black' }}>
+      <Container>
+        <Stack
+          direction={{ xs: 'column', lg: 'row' }}
+          className="justify-center lg:justify-between items-center p-4 z-100 w-full flex-col lg:flex-row"
         >
-          <MenuIcon className="text-white text-3xl" />
-          <Drawer
-            anchor="right"
-            open={openMenu}
-            onClose={toggleDrawer}
-            PaperProps={{ className: 'bg-beseto-dark-gray' }}
+          <Link href="/">
+            <img
+              className="hover:cursor-pointer"
+              src={logo.src}
+              alt="logo de beseto"
+            />
+          </Link>
+          <IconButton
+            aria-label="Mostrar Menú"
+            className="block lg:hidden"
+            onClick={toggleDrawer}
           >
-            {list('right')}
-          </Drawer>
-        </IconButton>
-        <List className="hidden lg:block z-100">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            orientation="horizontal"
-            TabIndicatorProps={{ style: { background: '#F6D9B6' } }}
-          >
-            {navigationLinks.map((link) => (
-              <Link key={link} href={link === 'inicio' ? '/' : `/${link}`}>
-                <Tab label={link} className="text-white" />
-              </Link>
-            ))}
-          </Tabs>
-        </List>
-        {session !== undefined ? <LoginLogout session={session} /> : null}
-      </Stack>
-    </Container>
+            <MenuIcon className="text-white text-3xl" />
+            <Drawer
+              anchor="right"
+              open={openMenu}
+              onClose={toggleDrawer}
+              PaperProps={{ className: 'bg-beseto-dark-gray' }}
+            >
+              {list('right')}
+            </Drawer>
+          </IconButton>
+          <List className="hidden lg:block z-100">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              orientation="horizontal"
+              TabIndicatorProps={{ style: { background: '#F6D9B6' } }}
+            >
+              {navigationLinks.map((link) => (
+                <Link key={link} href={link === 'inicio' ? '/' : `/${link}`}>
+                  <Tab label={link} className="text-white" />
+                </Link>
+              ))}
+            </Tabs>
+          </List>
+          {session !== undefined ? <LoginLogout session={session} /> : null}
+        </Stack>
+      </Container>
+    </Box>
   );
 }
 

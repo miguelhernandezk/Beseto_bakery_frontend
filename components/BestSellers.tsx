@@ -24,6 +24,7 @@ function BestSellers() {
           products.map((product) => (
             <Grid key={product._id} item xs={4}>
               <ProductCard
+                _id={product._id}
                 image={product.picture[0]}
                 name={product.name}
                 description={product.description}

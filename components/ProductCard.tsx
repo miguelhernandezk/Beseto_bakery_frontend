@@ -10,18 +10,25 @@ import {
 } from '@mui/material';
 
 import styles from '../styles/components/ProductCard.module.css';
+import { useRouter } from 'next/router';
 
 interface ProductProps {
+  _id: string;
   image: string;
   name: string;
   description: string;
   price: string | number;
 }
 
-function ProductCard({ image, name, description, price }: ProductProps) {
+function ProductCard({ _id, image, name, description, price }: ProductProps) {
+  const router = useRouter();
+
+  const navigateToProductPage = () => {
+    router.push(`products/${_id}`);
+  };
   return (
     <Card className="w-full">
-      <CardActionArea>
+      <CardActionArea onClick={navigateToProductPage}>
         <CardMedia
           component="img"
           className="object-cover h-48"

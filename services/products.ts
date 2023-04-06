@@ -23,6 +23,23 @@ export const getAllProducts = async (): Promise<ServicesResponse> => {
   }
 };
 
+export const getOneProduct = async (_id: string): Promise<ServicesResponse> => {
+  try {
+    const { data } = await axios.get(`${backendUrl}/products/${_id}`);
+
+    // "data Type"
+    const product: Product = data;
+    const response: ServicesResponse<Product> = {
+      error: false,
+      data: product,
+      helperText: null,
+    };
+    return response;
+  } catch (e) {
+    return handleApiErrors(e);
+  }
+};
+
 export const createProduct = async (
   payload: ProductDto
 ): Promise<ServicesResponse> => {
