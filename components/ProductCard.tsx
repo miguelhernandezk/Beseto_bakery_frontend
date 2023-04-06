@@ -9,6 +9,8 @@ import {
   Stack,
 } from '@mui/material';
 
+import styles from '../styles/components/ProductCard.module.css';
+
 interface ProductProps {
   image: string;
   name: string;
@@ -22,7 +24,7 @@ function ProductCard({ image, name, description, price }: ProductProps) {
       <CardActionArea>
         <CardMedia
           component="img"
-          className="w-full"
+          className="object-cover h-48"
           image={image}
           alt={name}
         />
@@ -37,7 +39,7 @@ function ProductCard({ image, name, description, price }: ProductProps) {
       </CardActionArea>
       <CardActions>
         <Stack className="flex flex-row md:flex-col lg:flex-row justify-between items-center w-full">
-          <Typography>{price}</Typography>
+          <Typography className={styles.price}>{price}</Typography>
           <Button variant="contained" size="small" className="bg-beseto-bisque">
             Agregar al carrito
           </Button>
