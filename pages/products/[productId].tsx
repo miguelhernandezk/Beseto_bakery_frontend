@@ -24,6 +24,7 @@ import { Product } from '../../interfaces/Product';
 import { signinStatus } from '../../services/auth';
 import { User } from '../../interfaces/User';
 import { UpdateProductDto } from '../../interfaces/dtos/Product.dto';
+import { sendWhatsappMessage } from '../../services/whatsapp';
 
 function ProductPage() {
   const router = useRouter();
@@ -274,7 +275,7 @@ function ProductPage() {
                       <Button
                         variant="contained"
                         className="bg-beseto-dark-gray text-white grow"
-                        onClick={() => sendWhatsappMessage(_id)}
+                        onClick={() => sendWhatsappMessage(product._id)}
                       >
                         Pedir info en whatsapp
                       </Button>
