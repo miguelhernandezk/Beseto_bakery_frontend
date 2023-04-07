@@ -11,6 +11,7 @@ import {
 
 import styles from '../styles/components/ProductCard.module.css';
 import { useRouter } from 'next/router';
+import { sendWhatsappMessage } from '../services/whatsapp';
 
 interface ProductProps {
   _id: string;
@@ -51,8 +52,13 @@ function ProductCard({ _id, image, name, description, price }: ProductProps) {
       <CardActions>
         <Stack className="flex flex-row md:flex-col lg:flex-row justify-between items-center w-full">
           <Typography className={styles.price}>{price}</Typography>
-          <Button variant="contained" size="small" className="bg-beseto-bisque">
-            Agregar al carrito
+          <Button
+            variant="contained"
+            size="small"
+            className="bg-beseto-bisque"
+            onClick={() => sendWhatsappMessage(_id)}
+          >
+            Pedir info en whats
           </Button>
         </Stack>
       </CardActions>

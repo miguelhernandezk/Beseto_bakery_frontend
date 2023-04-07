@@ -265,17 +265,18 @@ function ProductPage() {
                       ${product.price}.00 MXN
                     </Typography>
                     <Stack direction="row" spacing={2} sx={{ my: 1 }}>
-                      <Button
+                      {/* <Button
                         variant="contained"
                         className="bg-beseto-bisque grow"
                       >
                         Agregar al carrito
-                      </Button>
+                      </Button> */}
                       <Button
                         variant="contained"
                         className="bg-beseto-dark-gray text-white grow"
+                        onClick={() => sendWhatsappMessage(_id)}
                       >
-                        Comprar ahora
+                        Pedir info en whatsapp
                       </Button>
                     </Stack>{' '}
                     {product.tags !== null && product.tags?.length > 0 ? (
