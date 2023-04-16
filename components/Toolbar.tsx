@@ -56,11 +56,11 @@ function Toolbar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [session, setSession] = useState<boolean>();
   const navigationLinks = [
-    'inicio',
-    'nosotros',
-    'productos',
-    'tienda',
-    'carrito',
+    // 'inicio',
+    // 'nosotros',
+    // 'productos',
+    // 'tienda',
+    // 'carrito',
   ];
   const [value, setValue] = useState(0);
 

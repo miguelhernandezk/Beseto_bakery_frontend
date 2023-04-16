@@ -48,14 +48,14 @@ function Home() {
                   en todos nuestros productos. Nuestro proceso de elaboración
                   100% artesanal garantiza la satisfacción de nuestros clientes
                 </p>
-                <a href="#cotizador">
+                {/* <a href="#cotizador">
                   <button
                     className="text-beseto-chocolate w-auto rounded mb-8 p-3 bg-beseto-bisque"
                     type="button"
                   >
                     Cotiza Ahora
                   </button>
-                </a>
+                </a> */}
               </Box>
               <figure className="w-full overflow-hidden xl:w-1/2 xl:pl-8">
                 <img
@@ -111,14 +111,14 @@ function Home() {
                   verdad te lo mereces. Los ingredientes que usamos son de la
                   más alta calidad para garantizar el sabor que nos caracteriza.
                 </p>
-                <a href="#cotizador">
+                {/* <a href="#cotizador">
                   <button
                     className="text-beseto-chocolate w-auto rounded mb-8 p-3 bg-beseto-bisque"
                     type="button"
                   >
                     Cotiza Ahora
                   </button>
-                </a>
+                </a> */}
               </div>
               <figure className="w-64 sm:w-96 md:w-160 xl:w-1/2">
                 <Card
@@ -157,23 +157,23 @@ function Home() {
                   Comunicate con nosotros y realiza tu pedido. Conchas, donas,
                   cuernitos... Tenemos casi de todo!!
                 </p>
-                <a href="#cotizador">
+                {/* <a href="#cotizador">
                   <button
                     className="text-beseto-chocolate w-auto rounded mb-8 p-3 bg-beseto-bisque"
                     type="button"
                   >
                     Cotiza Ahora
                   </button>
-                </a>
+                </a> */}
               </div>
             </section>
           </Container>
-          <section
+          {/* <section
             id="cotizador"
             className="calculator-container relative pb-8 w-full"
           >
             <Calculator />
-          </section>
+          </section> */}
         </Box>
 
         <footer className="bg-beseto-midnight-blue text-white p-4 text-center font-semibold flex flex-col gap-4 items-center justify-between">
