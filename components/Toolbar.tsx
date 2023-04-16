@@ -55,7 +55,7 @@ function Toolbar() {
 
   const [openMenu, setOpenMenu] = useState(false);
   const [session, setSession] = useState<boolean>();
-  const navigationLinks = [
+  const navigationLinks: string[] = [
     // 'inicio',
     // 'nosotros',
     // 'productos',
