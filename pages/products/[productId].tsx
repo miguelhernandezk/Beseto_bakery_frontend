@@ -372,7 +372,7 @@ function ProductPage({ initialProduct }: ProductIdProps) {
                       <TextField
                         sx={{ my: 1 }}
                         id="outlined-basic"
-                        value={editedName}
+                        value={editedFlavor1}
                         label="Nuevo sabor principal"
                         variant="outlined"
                         onChange={onChangeEditDescriptionField}
@@ -393,7 +393,7 @@ function ProductPage({ initialProduct }: ProductIdProps) {
                         <TextField
                           sx={{ my: 1 }}
                           id="outlined-basic"
-                          value={editedDescripton}
+                          value={editedFlavor2}
                           label="Nuevo sabor secundario"
                           variant="outlined"
                           onChange={onChangeEditDescriptionField}
