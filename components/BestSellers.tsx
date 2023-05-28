@@ -18,8 +18,8 @@ function BestSellers() {
   const onSetProducts = async () => {
     const productsResponse = await getAllProducts();
     if (productsResponse.error) {
-      return undefined;
       setLoading(false);
+      return undefined;
     } else {
       const reversedProducts = [...productsResponse.data].reverse();
       const mainProducts: Product[] = [];
