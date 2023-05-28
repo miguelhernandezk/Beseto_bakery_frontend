@@ -27,13 +27,18 @@ import { signinRedirect } from '../../services/auth';
 
 type CakeFill = 'single' | 'double' | 'N/A';
 
+export enum UiStates {
+  ENTER_DATA = 0,
+  CREATED = 1,
+}
+
 export default function AdminSite() {
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [cakeFill, setCakeFill] = useState<CakeFill>('N/A');
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string>('');
-  const [localUiState, setLocalUiState] = useState<'Created' | 'Enter data'>(
-    'Enter data'
+  const [localUiState, setLocalUiState] = useState<UiStates>(
+    UiStates.ENTER_DATA
   );
 
   const notifySuccess = (msg = 'Tarea realizada con éxito') =>
@@ -101,6 +106,7 @@ export default function AdminSite() {
       const createProductResponse = await createProduct(payload);
       if (createProductResponse.error) {
         notifyError();
+        setLocalUiState(UiStates.CREATED);
       } else {
         notifySuccess();
       }
@@ -131,7 +137,7 @@ export default function AdminSite() {
         newestOnTop
       />
       <>
-        {localUiState === 'Enter data' && (
+        {localUiState === UiStates.ENTER_DATA && (
           <Container className="w-full flex flex-col items-center justify-center text-center home">
             <Box className={`flex flex-col items-center`}>
               <Typography variant="h4">Agregar pastel</Typography>
@@ -283,15 +289,15 @@ export default function AdminSite() {
             </Box>
           </Container>
         )}
-        {localUiState === 'Created' && (
-          <Container className="w-full flex flex-col items-center justify-center text-center">
+        {localUiState === UiStates.CREATED && (
+          <Container className="w-full flex flex-col items-center justify-center text-center h-full">
             <Typography variant="h4">
               ¡Producto agregado correctamente!
             </Typography>
             <CheckCircleIcon color="success" />
             <br />
             <Box className="flex flex-row">
-              <Button onClick={() => setLocalUiState('Enter data')}>
+              <Button onClick={() => setLocalUiState(UiStates.ENTER_DATA)}>
                 Agregar otro producto
               </Button>
               {/* <Button onClick={async () => await router.push('/')}>
