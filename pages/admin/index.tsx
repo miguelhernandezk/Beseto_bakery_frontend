@@ -11,6 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Box } from '@mui/system';
 import { FormEvent, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,6 +32,9 @@ export default function AdminSite() {
   const [cakeFill, setCakeFill] = useState<CakeFill>('N/A');
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string>('');
+  const [localUiState, setLocalUiState] = useState<'Created' | 'Enter data'>(
+    'Enter data'
+  );
 
   const notifySuccess = (msg = 'Tarea realizada con éxito') =>
     toast.success(msg);
@@ -127,154 +131,175 @@ export default function AdminSite() {
         newestOnTop
       />
       <>
-        <Container className="w-full flex flex-col items-center justify-center text-center home">
-          <Box className={`flex flex-col items-center`}>
-            <Typography variant="h4">Agregar pastel</Typography>
-            <Box component="form" onSubmit={handleSubmit}>
-              <Stack spacing={3}>
-                <TextField
-                  margin="normal"
-                  helperText="Nombre que se mostará a los clientes, por ejemplo: Pastel de Zarzamora con queso"
-                  required
-                  id="cakeName"
-                  label="Nombre del pastel"
-                  name="cakeName"
-                  autoComplete="Nombre del pastel"
-                  autoFocus
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Sabor principal del pastel, por ejemplo: Zarzamora"
-                  required
-                  name="flavor1"
-                  label="Sabor 1"
-                  id="flavor1"
-                  autoComplete="Sabor 1"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Sabor secundario del pasetel, por ejemplo: Queso"
-                  name="flavor2"
-                  label="Sabor 2"
-                  id="flavor2"
-                  autoComplete="Sabor 2"
-                  disabled={loadingState}
-                />
-                <FormControl>
-                  <InputLabel id="fill-label">Relleno</InputLabel>
-                  <Select
-                    labelId="fill-label"
-                    id="fill"
-                    value={cakeFill}
-                    label="Relleno"
-                    onChange={handleChangeFill}
-                  >
-                    <MenuItem value="single">Un relleno</MenuItem>
-                    <MenuItem value="double">Doble relleno</MenuItem>
-                    <MenuItem value="N/A">N/A</MenuItem>
-                  </Select>
-                  <FormHelperText>
-                    Cantidad de rellenos. Si el pastel no aplica para relleno,
-                    selecciona N/A
-                  </FormHelperText>
-                </FormControl>
-                <TextField
-                  margin="normal"
-                  helperText="Tamaño del pastel, medido en cantidad de personas. Por ejemplo: 50 personas, 100 personas, etc"
-                  required
-                  name="persons"
-                  label="cantidad de personas"
-                  id="personss"
-                  autoComplete="cantidad de personas"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Para pasteles del mismo sabor, pero que la decoración es diferente. "
-                  required
-                  name="variant"
-                  label="Variante"
-                  id="variant"
-                  autoComplete="Variante"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="URL de la imagen."
-                  required
-                  name="picture"
-                  label="Url de la imagen"
-                  id="picture"
-                  autoComplete="Url de la imagen"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Descripción que verán los clientes en las tarjetas de presentación. Sé corto, claro y conciso."
-                  required
-                  name="description"
-                  label="Descripción"
-                  id="description"
-                  autoComplete="Descripción"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Precio actual del pastel."
-                  required
-                  name="price"
-                  label="Precio"
-                  id="price"
-                  autoComplete="Precio"
-                  disabled={loadingState}
-                />
-                <TextField
-                  margin="normal"
-                  helperText="Palabras relacionadas al pastel. Por ejemplo: tres leches, zarzamora, queso, familiar, personalizado, queso philadelphia, etc"
-                  required
-                  name="tags"
-                  label="Etiquetas"
-                  id="tags"
-                  autoComplete="Etiquetas"
-                  disabled={loadingState}
-                />
-                {allCategories !== null &&
-                allCategories !== undefined &&
-                allCategories.length > 0 ? (
+        {localUiState === 'Enter data' && (
+          <Container className="w-full flex flex-col items-center justify-center text-center home">
+            <Box className={`flex flex-col items-center`}>
+              <Typography variant="h4">Agregar pastel</Typography>
+              <Box component="form" onSubmit={handleSubmit}>
+                <Stack spacing={3}>
+                  <TextField
+                    margin="normal"
+                    helperText="Nombre que se mostará a los clientes, por ejemplo: Pastel de Zarzamora con queso"
+                    required
+                    id="cakeName"
+                    label="Nombre del pastel"
+                    name="cakeName"
+                    autoComplete="Nombre del pastel"
+                    autoFocus
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="Sabor principal del pastel, por ejemplo: Zarzamora"
+                    required
+                    name="flavor1"
+                    label="Sabor 1"
+                    id="flavor1"
+                    autoComplete="Sabor 1"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="Sabor secundario del pasetel, por ejemplo: Queso"
+                    name="flavor2"
+                    label="Sabor 2"
+                    id="flavor2"
+                    autoComplete="Sabor 2"
+                    disabled={loadingState}
+                  />
                   <FormControl>
-                    <InputLabel id="category-label">Categoría</InputLabel>
+                    <InputLabel id="fill-label">Relleno</InputLabel>
                     <Select
-                      labelId="category-label"
-                      id="category"
-                      value={currentCategory}
-                      label="Categoría"
-                      onChange={handleChangeCategory}
+                      labelId="fill-label"
+                      id="fill"
+                      value={cakeFill}
+                      label="Relleno"
+                      onChange={handleChangeFill}
                     >
-                      {allCategories.map((category) => (
-                        <MenuItem key={category._id} value={category._id}>
-                          {category.name}
-                        </MenuItem>
-                      ))}
+                      <MenuItem value="single">Un relleno</MenuItem>
+                      <MenuItem value="double">Doble relleno</MenuItem>
+                      <MenuItem value="N/A">N/A</MenuItem>
                     </Select>
                     <FormHelperText>
-                      Categoría a la que pertenece este pastel
+                      Cantidad de rellenos. Si el pastel no aplica para relleno,
+                      selecciona N/A
                     </FormHelperText>
                   </FormControl>
-                ) : null}
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={loadingState}
-                  className="bg-beseto-bisque"
-                >
-                  Crear
-                </Button>
-              </Stack>
+                  <TextField
+                    margin="normal"
+                    helperText="Tamaño del pastel, medido en cantidad de personas. Por ejemplo: 50 personas, 100 personas, etc"
+                    required
+                    name="persons"
+                    label="cantidad de personas"
+                    id="personss"
+                    autoComplete="cantidad de personas"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="Para pasteles del mismo sabor, pero que la decoración es diferente. "
+                    required
+                    name="variant"
+                    label="Variante"
+                    id="variant"
+                    autoComplete="Variante"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="URL de la imagen."
+                    required
+                    name="picture"
+                    label="Url de la imagen"
+                    id="picture"
+                    autoComplete="Url de la imagen"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    multiline
+                    rows={5}
+                    helperText="Descripción que verán los clientes en las tarjetas de presentación. Sé corto, claro y conciso."
+                    required
+                    name="description"
+                    label="Descripción"
+                    id="description"
+                    autoComplete="Descripción"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="Precio actual del pastel."
+                    required
+                    name="price"
+                    label="Precio"
+                    id="price"
+                    autoComplete="Precio"
+                    disabled={loadingState}
+                  />
+                  <TextField
+                    margin="normal"
+                    helperText="Palabras relacionadas al pastel. Por ejemplo: tres leches, zarzamora, queso, familiar, personalizado, queso philadelphia, etc"
+                    required
+                    name="tags"
+                    label="Etiquetas"
+                    id="tags"
+                    autoComplete="Etiquetas"
+                    disabled={loadingState}
+                  />
+                  {allCategories !== null &&
+                  allCategories !== undefined &&
+                  allCategories.length > 0 ? (
+                    <FormControl>
+                      <InputLabel id="category-label">Categoría</InputLabel>
+                      <Select
+                        labelId="category-label"
+                        id="category"
+                        value={currentCategory}
+                        label="Categoría"
+                        onChange={handleChangeCategory}
+                      >
+                        {allCategories.map((category) => (
+                          <MenuItem key={category._id} value={category._id}>
+                            {category.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        Categoría a la que pertenece este pastel
+                      </FormHelperText>
+                    </FormControl>
+                  ) : null}
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={loadingState}
+                    className="bg-beseto-bisque"
+                  >
+                    Crear
+                  </Button>
+                </Stack>
+              </Box>
             </Box>
-          </Box>
-        </Container>
+          </Container>
+        )}
+        {localUiState === 'Created' && (
+          <Container className="w-full flex flex-col items-center justify-center text-center">
+            <Typography variant="h4">
+              ¡Producto agregado correctamente!
+            </Typography>
+            <CheckCircleIcon color="success" />
+            <br />
+            <Box className="flex flex-row">
+              <Button onClick={() => setLocalUiState('Enter data')}>
+                Agregar otro producto
+              </Button>
+              {/* <Button onClick={async () => await router.push('/')}>
+                Back to organization
+              </Button> */}
+            </Box>
+          </Container>
+        )}
       </>
       <Footer />
     </>
