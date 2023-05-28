@@ -126,7 +126,7 @@ export default function AdminSite() {
   }, []);
 
   return (
-    <>
+    <Box className="h-screen">
       <Head>
         <title>Añadir producto - Beseto</title>
       </Head>
@@ -136,9 +136,9 @@ export default function AdminSite() {
         hideProgressBar
         newestOnTop
       />
-      <>
-        {localUiState === UiStates.ENTER_DATA && (
-          <Container className="w-full flex flex-col items-center justify-center text-center home">
+      <Box className="flex flex-col h-full">
+        <Container className="w-full flex flex-col items-center justify-center text-center grow">
+          {localUiState === UiStates.ENTER_DATA && (
             <Box className={`flex flex-col items-center`}>
               <Typography variant="h4">Agregar pastel</Typography>
               <Box component="form" onSubmit={handleSubmit}>
@@ -287,27 +287,27 @@ export default function AdminSite() {
                 </Stack>
               </Box>
             </Box>
-          </Container>
-        )}
-        {localUiState === UiStates.CREATED && (
-          <Container className="w-full flex flex-col items-center justify-center text-center h-full">
-            <Typography variant="h4">
-              ¡Producto agregado correctamente!
-            </Typography>
-            <CheckCircleIcon color="success" />
-            <br />
-            <Box className="flex flex-row">
-              <Button onClick={() => setLocalUiState(UiStates.ENTER_DATA)}>
-                Agregar otro producto
-              </Button>
-              {/* <Button onClick={async () => await router.push('/')}>
+          )}
+          {localUiState === UiStates.CREATED && (
+            <Stack alignItems="center" justifyContent="center">
+              <Typography variant="h4">
+                ¡Producto agregado correctamente!
+              </Typography>
+              <CheckCircleIcon color="success" />
+              <br />
+              <Box className="flex flex-row">
+                <Button onClick={() => setLocalUiState(UiStates.ENTER_DATA)}>
+                  Agregar otro producto
+                </Button>
+                {/* <Button onClick={async () => await router.push('/')}>
                 Back to organization
               </Button> */}
-            </Box>
-          </Container>
-        )}
-      </>
-      <Footer />
-    </>
+              </Box>
+            </Stack>
+          )}
+        </Container>
+        <Footer />
+      </Box>
+    </Box>
   );
 }
