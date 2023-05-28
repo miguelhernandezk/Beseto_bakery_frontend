@@ -21,7 +21,7 @@ export default function Products() {
       return undefined;
     } else {
       setLoading(false);
-      setProducts(productsResponse.data);
+      setProducts(productsResponse.data.reverse());
     }
   };
   useEffect(() => {
