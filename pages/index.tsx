@@ -6,7 +6,7 @@ import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
 import ProductExamples from '../components/ProductExamples';
 import HeroHeader from '../components/HeroHeader';
 // import MainHeader from '../components/MainHeader';
-import Calculator from '../components/Calculator';
+// import Calculator from '../components/Calculator';
 import Card from '../components/Card';
 import pastelPrincipal from '../public/assets/imgs/Home/pastel_principal.jpg';
 import pastelDiscover from '../public/assets/imgs/Home/pastel_discover.jpeg';
