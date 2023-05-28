@@ -10,6 +10,7 @@ import { Product } from '../../interfaces/Product';
 import { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import Toolbar from '../../components/Toolbar';
+import Head from 'next/head';
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>();
@@ -29,6 +30,23 @@ export default function Products() {
   }, []);
   return (
     <>
+      <Head>
+        <title>Productos - Beseto</title>
+        <meta property="og:title" content="Todos los productos Beseto" />
+        <meta
+          name="description"
+          content="Encuentra todos los productos de los que disponemos"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          property="og:url"
+          content={`https://www.beseto.com.mx/products/`}
+        />
+        <meta
+          property="og:image"
+          content="https://portfoliomiguelhernandezk.s3.us-west-1.amazonaws.com/Beseto/Productos/Tres+Leches/gelatinaFrutosRojosQueso.jpeg"
+        />
+      </Head>
       <Toolbar />
       <Container className="py-4">
         {loading === false ? (
