@@ -230,6 +230,8 @@ function ProductPage({ initialProduct }: ProductIdProps) {
           {product !== undefined ? product?.name : 'Loading'} - Beseto
         </title>
         <meta property="og:title" content={product.name} />
+        <meta name="description" content={product.description} />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta
           property="og:url"
           content={`https://www.beseto.com.mx/products/${product._id}/`}
