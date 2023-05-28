@@ -19,28 +19,89 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Toolbar from '../../components/Toolbar';
-import { getOneProduct, updateProduct } from '../../services/products';
+import {
+  getAllProducts,
+  getOneProduct,
+  updateProduct,
+} from '../../services/products';
 import { Product } from '../../interfaces/Product';
 import { signinStatus } from '../../services/auth';
 import { User } from '../../interfaces/User';
 import { UpdateProductDto } from '../../interfaces/dtos/Product.dto';
 import { sendWhatsappMessage } from '../../services/whatsapp';
+import { revalidatePage } from '../../services/revalidatePage';
 
-function ProductPage() {
+interface ProductIdProps {
+  initialProduct: Product;
+}
+
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const productResponse = await getAllProducts();
+  if (productResponse.error) {
+    return { paths: undefined, fallback: false };
+  } else {
+    const myProducts: Product[] = productResponse.data;
+    const paths = myProducts.map((product) => ({
+      params: { productId: product._id },
+    }));
+    return { paths, fallback: false };
+  }
+}
+
+export async function getStaticProps({
+  params,
+}: {
+  params: { productId: string };
+}) {
+  const onSetProducts = async () => {
+    const postsResponse = await getOneProduct(params.productId);
+    if (postsResponse.error) {
+      return {
+        props: {
+          initialProduct: undefined,
+          revalidate: 60,
+        },
+      };
+    } else {
+      const myProduct: Product = postsResponse.data;
+      return {
+        props: {
+          initialProduct: myProduct,
+        },
+        revalidate: 60,
+      };
+    }
+  };
+  return onSetProducts();
+}
+
+function ProductPage({ initialProduct }: ProductIdProps) {
   const router = useRouter();
 
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [product, setProduct] = useState<Product>();
+  const [product, setProduct] = useState<Product>(initialProduct);
   const [privileges, setPrivileges] = useState<'can edit' | 'cannot edit'>(
     'cannot edit'
   );
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [editedName, setEditedName] = useState<string>();
-  const [editedDescripton, setEditedDescription] = useState<string>();
-  const [editedPrice, setEditedPrice] = useState<string>();
-  const [editedFlavor1, setEditedFlavor1] = useState<string>();
-  const [editedFlavor2, setEditedFlavor2] = useState<string>();
-  const [editedTags, setEditedTags] = useState<string[]>([]);
+  const [editedName, setEditedName] = useState<string>(initialProduct.name);
+  const [editedDescripton, setEditedDescription] = useState<string>(
+    initialProduct.description
+  );
+  const [editedPrice, setEditedPrice] = useState<string>(
+    String(initialProduct.price)
+  );
+  const [editedFlavor1, setEditedFlavor1] = useState<string>(
+    initialProduct.flavor1
+  );
+  const [editedFlavor2, setEditedFlavor2] = useState<string>(
+    initialProduct.flavor2 ?? ''
+  );
+  const [editedTags, setEditedTags] = useState<string[]>(
+    initialProduct.tags ?? []
+  );
   const [tagField, setTagField] = useState<string>('');
 
   /**
@@ -55,28 +116,10 @@ function ProductPage() {
    */
   const notifyError = (msg = 'Oops, something went wrong') => toast.error(msg);
 
-  const onSetProductInfo = async (_id: string) => {
-    const productResponse = await getOneProduct(_id);
-    if (productResponse.error) {
-      const temp = 'Do nothing';
-    } else {
-      const myProduct: Product = productResponse.data;
-      setProduct(myProduct);
-      setEditedName(myProduct.name);
-      setEditedDescription(myProduct.description);
-      setEditedPrice(String(myProduct.price));
-      setEditedFlavor1(myProduct.flavor1);
-      setEditedFlavor2(
-        myProduct.flavor2 !== null ? myProduct.flavor2 : undefined
-      );
-      setEditedTags(myProduct.tags !== null ? myProduct?.tags : []);
-    }
-  };
-
   const onSetUserPrivileges = async () => {
     const mySigninStatusResponse = await signinStatus();
     if (mySigninStatusResponse.error) {
-      const nothing = 'do nothing';
+      setPrivileges('cannot edit');
     } else {
       const mySigninStatus: User = mySigninStatusResponse.data;
       if (
@@ -156,11 +199,20 @@ function ProductPage() {
         setEditedDescription(updatedProduct.description);
         setEditedPrice(String(updatedProduct.price));
         setEditedFlavor1(updatedProduct.flavor1);
-        setEditedFlavor1(
-          updatedProduct.flavor2 !== null ? updatedProduct.flavor2 : undefined
-        );
+        setEditedFlavor2(updatedProduct.flavor2 ?? '');
         setEditedTags(updatedProduct.tags !== null ? updatedProduct.tags : []);
         notifySuccess('Tarea realizada con éxito');
+        const messageResponse = await revalidatePage(router.asPath);
+        if (messageResponse.error) {
+          notifyError(
+            'Tu producto se actualizó pero no pudimos reflejar los cambios en este momento. Los cambios se reflejarán automáticamente en un minuto'
+          );
+        } else {
+          const message = messageResponse.data;
+          notifySuccess(
+            `${message}: Los cambios se ven reflejados de manera instantánea`
+          );
+        }
       }
     } else {
       notifyError('Parece que hubo un error al recolectar tu información');
@@ -168,16 +220,6 @@ function ProductPage() {
     setLoadingState(false);
   };
 
-  useEffect(() => {
-    const idString = router.query.productId;
-    if (
-      idString !== null &&
-      idString !== undefined &&
-      typeof idString === 'string'
-    ) {
-      onSetProductInfo(idString);
-    }
-  }, [router.isReady]);
   useEffect(() => {
     onSetUserPrivileges();
   }, []);
@@ -187,6 +229,12 @@ function ProductPage() {
         <title>
           {product !== undefined ? product?.name : 'Loading'} - Beseto
         </title>
+        <meta property="og:title" content={product.name} />
+        <meta
+          property="og:url"
+          content={`https://www.beseto.com.mx/products/${product._id}/`}
+        />
+        <meta property="og:image" content={product.picture[0]} />
       </Head>
       <ToastContainer
         position="top-right"
