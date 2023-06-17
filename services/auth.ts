@@ -76,19 +76,3 @@ export const signinStatus = async (
     return handleApiErrors(e);
   }
 };
-
-export const signOut = () => {
-  localStorage.removeItem('Beseto_token');
-  window.location.replace('/');
-};
-
-export const signinRedirect = (route?: string): boolean => {
-  const token: string | null = localStorage.getItem('Beseto_token');
-  if (!token) {
-    if (window.location.pathname !== '/signin') {
-      window.location.replace(route ? `/signin?next=${route}` : '/signin');
-    }
-    return true;
-  }
-  return false;
-};
