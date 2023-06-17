@@ -36,7 +36,7 @@ export default function SignIn() {
    *  If already logged, redirects to previous page
    */
   const handleSignInStatus = async (route?: string) => {
-    const validSignInResponse = await signinStatus();
+    const validSignInResponse = await signinStatus('Temporal string');
     if (validSignInResponse.error) {
       notifyError('No pudimos iniciar tu sesión');
     } else {
