@@ -13,7 +13,7 @@ export interface User {
 }
 
 export interface UserSignin {
-  acces_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic3VwZXJ1c2VyIiwiaWF0IjoxNjc5NzI3NzQzLCJleHAiOjE2ODA1OTE3NDN9.1tOgNwPrgjWAHUSG5GJpoug2-SAiuaCaWFrerwzYM6w';
+  access_token: string;
   user: User;
 }
 

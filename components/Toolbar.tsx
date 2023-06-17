@@ -16,19 +16,14 @@ import {
   Button,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 import logo from '../public/assets/imgs/common/xs/logo_xs.png';
-import { signOut } from '../services/auth';
+// import { signOut } from '../services/auth';
 
-interface LoginLogoutProps {
-  session: boolean;
-}
-
-function LoginLogout({ session }: LoginLogoutProps) {
-  const goToSignInPage = () => {
-    window.location.replace('/signin');
-  };
-  if (session) {
+function LoginLogout() {
+  const { data: session, status } = useSession();
+  if (status === 'authenticated') {
     return (
       <Button
         variant="contained"
@@ -43,7 +38,7 @@ function LoginLogout({ session }: LoginLogoutProps) {
     <Button
       variant="contained"
       className="bg-beseto-bisque"
-      onClick={() => goToSignInPage()}
+      onClick={() => signIn()}
     >
       Iniciar sesión
     </Button>
@@ -54,7 +49,6 @@ function Toolbar() {
   const router = useRouter();
 
   const [openMenu, setOpenMenu] = useState(false);
-  const [session, setSession] = useState<boolean>();
   const navigationLinks: string[] = [
     // 'inicio',
     // 'nosotros',
@@ -70,17 +64,6 @@ function Toolbar() {
 
   const toggleDrawer = () => {
     setOpenMenu(!openMenu);
-  };
-
-  const handleGetSession = () => {
-    const besetoToken = localStorage.getItem('Beseto_token');
-    if (
-      besetoToken !== null &&
-      besetoToken !== undefined &&
-      besetoToken !== 'undefined'
-    )
-      setSession(true);
-    else setSession(false);
   };
 
   const list = (anchor: unknown) => (
@@ -107,16 +90,6 @@ function Toolbar() {
       </List>
     </Box>
   );
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    setValue(
-      router.asPath.substring(1) === ''
-        ? 0
-        : navigationLinks.indexOf(router.asPath.substring(1))
-    );
-    handleGetSession();
-  }, [router.isReady, router.asPath]);
 
   return (
     <Box sx={{ background: 'black' }}>
@@ -161,7 +134,7 @@ function Toolbar() {
               ))}
             </Tabs>
           </List>
-          {session !== undefined ? <LoginLogout session={session} /> : null}
+          <LoginLogout />
         </Stack>
       </Container>
     </Box>

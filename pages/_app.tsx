@@ -3,6 +3,7 @@ import {
   ThemeProvider,
   StyledEngineProvider,
 } from '@mui/material/styles';
+import { SessionProvider as AuthProvider } from 'next-auth/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -36,12 +37,14 @@ const theme = createTheme({
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <AuthProvider session={pageProps.session}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </AuthProvider>
   );
 }
 

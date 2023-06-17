@@ -23,7 +23,10 @@ import Head from 'next/head';
 import { Category } from '../../interfaces/Category';
 import { getAllCategories } from '../../services/categories';
 import Footer from '../../components/Footer';
-import { signinRedirect } from '../../services/auth';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { useSession } from 'next-auth/react';
 
 type CakeFill = 'single' | 'double' | 'N/A';
 
@@ -33,6 +36,7 @@ export enum UiStates {
 }
 
 export default function AdminSite() {
+  const { data: session, status } = useSession();
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [cakeFill, setCakeFill] = useState<CakeFill>('N/A');
   const [allCategories, setAllCategories] = useState<Category[]>([]);
@@ -68,62 +72,70 @@ export default function AdminSite() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoadingState(true);
-    const data = new FormData(event.currentTarget);
-    const name = data.get('cakeName')?.toString();
-    const flavor1 = data.get('flavor1')?.toString();
-    const flavor2 = data.get('flavor2')?.toString();
-    const persons = data.get('persons')?.toString();
-    const variant = data.get('variant')?.toString();
-    const picture = data.get('picture')?.toString();
-    const description = data.get('description')?.toString();
-    const price = data.get('price')?.toString();
-    const tags = data.get('tags')?.toString();
+    if (session) {
+      const data = new FormData(event.currentTarget);
+      const name = data.get('cakeName')?.toString();
+      const flavor1 = data.get('flavor1')?.toString();
+      const flavor2 = data.get('flavor2')?.toString();
+      const persons = data.get('persons')?.toString();
+      const variant = data.get('variant')?.toString();
+      const picture = data.get('picture')?.toString();
+      const description = data.get('description')?.toString();
+      const price = data.get('price')?.toString();
+      const tags = data.get('tags')?.toString();
 
-    if (
-      name !== undefined &&
-      flavor1 !== undefined &&
-      flavor2 !== undefined &&
-      persons !== undefined &&
-      variant !== undefined &&
-      picture !== undefined &&
-      description !== undefined &&
-      price !== undefined &&
-      tags !== undefined
-    ) {
-      const payload: ProductDto = {
-        name: name,
-        flavor1: flavor1,
-        flavor2: flavor2,
-        fill: cakeFill,
-        persons: Number(persons),
-        variant: Number(variant),
-        picture: [picture],
-        description: description,
-        price: Number(price),
-        tags: tags.split(',').map((tag) => tag.trim()),
-        category: currentCategory,
-      };
-      const createProductResponse = await createProduct(payload);
-      if (createProductResponse.error) {
-        notifyError();
-        setLocalUiState(UiStates.CREATED);
+      if (
+        name !== undefined &&
+        flavor1 !== undefined &&
+        flavor2 !== undefined &&
+        persons !== undefined &&
+        variant !== undefined &&
+        picture !== undefined &&
+        description !== undefined &&
+        price !== undefined &&
+        tags !== undefined
+      ) {
+        const payload: ProductDto = {
+          name: name,
+          flavor1: flavor1,
+          flavor2: flavor2,
+          fill: cakeFill,
+          persons: Number(persons),
+          variant: Number(variant),
+          picture: [picture],
+          description: description,
+          price: Number(price),
+          tags: tags.split(',').map((tag) => tag.trim()),
+          category: currentCategory,
+        };
+        const createProductResponse = await createProduct(
+          payload,
+          session?.access_token
+        );
+        if (createProductResponse.error) {
+          notifyError();
+          setLocalUiState(UiStates.CREATED);
+        } else {
+          notifySuccess();
+        }
+        setLoadingState(false);
       } else {
-        notifySuccess();
+        notifyError(
+          'Algunos de los valores no fueron ingresados correctamente'
+        );
       }
-      setLoadingState(false);
     } else {
-      notifyError('Algunos de los valores no fueron ingresados correctamente');
-      setLoadingState(false);
+      notifyError('Error al verificar tu sesión');
     }
+    setLoadingState(false);
   };
 
   useEffect(() => {
     onSetCategories();
   }, []);
-
-  useEffect(() => {
-    signinRedirect();
-  }, []);
+  if (status === 'loading') return null;
+  if (status === 'unauthenticated' || !session)
+    return <Typography>No has iniciado sesión</Typography>;
 
   return (
     <Box className="h-screen">
@@ -311,3 +323,22 @@ export default function AdminSite() {
     </Box>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<object> = async (
+  context
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
+};

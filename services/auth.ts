@@ -28,11 +28,10 @@ export const login = async (
 
     // "data Type"
     const signinUser: UserSignin = data;
-    if (data.acces_token) {
-      localStorage.setItem('Beseto_token', data.acces_token);
-      const response: ServicesResponse<User> = {
+    if (data.access_token) {
+      const response: ServicesResponse<UserSignin> = {
         error: false,
-        data: signinUser.user,
+        data: signinUser,
         helperText: null,
       };
       return response;
@@ -52,9 +51,11 @@ export const login = async (
   }
 };
 
-export const signinStatus = async (): Promise<ServicesResponse> => {
+export const signinStatus = async (
+  token: string
+): Promise<ServicesResponse> => {
   try {
-    const token = localStorage.getItem('Beseto_token');
+    // const token = localStorage.getItem('Beseto_token');
     const config: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'application/json',

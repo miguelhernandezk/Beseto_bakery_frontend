@@ -25,11 +25,10 @@ import {
   updateProduct,
 } from '../../services/products';
 import { Product } from '../../interfaces/Product';
-import { signinStatus } from '../../services/auth';
-import { User } from '../../interfaces/User';
 import { UpdateProductDto } from '../../interfaces/dtos/Product.dto';
 import { sendWhatsappMessage } from '../../services/whatsapp';
 import { revalidatePage } from '../../services/revalidatePage';
+import { useSession } from 'next-auth/react';
 
 interface ProductIdProps {
   initialProduct: Product;
@@ -80,6 +79,8 @@ export async function getStaticProps({
 function ProductPage({ initialProduct }: ProductIdProps) {
   const router = useRouter();
 
+  const { data: session } = useSession();
+
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [product, setProduct] = useState<Product>(initialProduct);
   const [privileges, setPrivileges] = useState<'can edit' | 'cannot edit'>(
@@ -117,17 +118,15 @@ function ProductPage({ initialProduct }: ProductIdProps) {
   const notifyError = (msg = 'Oops, something went wrong') => toast.error(msg);
 
   const onSetUserPrivileges = async () => {
-    const mySigninStatusResponse = await signinStatus();
-    if (mySigninStatusResponse.error) {
-      setPrivileges('cannot edit');
-    } else {
-      const mySigninStatus: User = mySigninStatusResponse.data;
+    if (session) {
       if (
-        mySigninStatus.role === 'admin' ||
-        mySigninStatus.role === 'editor' ||
-        mySigninStatus.role === 'superuser'
+        session.user.role === 'admin' ||
+        session.user.role === 'editor' ||
+        session.user.role === 'superuser'
       )
         setPrivileges('can edit');
+    } else {
+      setPrivileges('cannot edit');
     }
   };
 
@@ -180,42 +179,52 @@ function ProductPage({ initialProduct }: ProductIdProps) {
   const handleClickSaveChangesButton = async () => {
     setEditMode(false);
     setLoadingState(true);
-    const payload: UpdateProductDto = {
-      name: editedName,
-      description: editedDescripton,
-      price: Number(editedPrice),
-      flavor1: editedFlavor1,
-      flavor2: editedFlavor2,
-      tags: editedTags,
-    };
-    if (product !== undefined) {
-      const updatedProductResponse = await updateProduct(product._id, payload);
-      if (updatedProductResponse.error) {
-        notifyError('No pudimos actualizar el producto');
-      } else {
-        const updatedProduct: Product = updatedProductResponse.data;
-        setProduct(updatedProduct);
-        setEditedName(updatedProduct.name);
-        setEditedDescription(updatedProduct.description);
-        setEditedPrice(String(updatedProduct.price));
-        setEditedFlavor1(updatedProduct.flavor1);
-        setEditedFlavor2(updatedProduct.flavor2 ?? '');
-        setEditedTags(updatedProduct.tags !== null ? updatedProduct.tags : []);
-        notifySuccess('Tarea realizada con éxito');
-        const messageResponse = await revalidatePage(router.asPath);
-        if (messageResponse.error) {
-          notifyError(
-            'Tu producto se actualizó pero no pudimos reflejar los cambios en este momento. Los cambios se reflejarán automáticamente en un minuto'
-          );
+    if (session) {
+      const payload: UpdateProductDto = {
+        name: editedName,
+        description: editedDescripton,
+        price: Number(editedPrice),
+        flavor1: editedFlavor1,
+        flavor2: editedFlavor2,
+        tags: editedTags,
+      };
+      if (product !== undefined) {
+        const updatedProductResponse = await updateProduct(
+          product._id,
+          payload,
+          session?.access_token
+        );
+        if (updatedProductResponse.error) {
+          notifyError('No pudimos actualizar el producto');
         } else {
-          const message = messageResponse.data;
-          notifySuccess(
-            `${message}: Los cambios se ven reflejados de manera instantánea`
+          const updatedProduct: Product = updatedProductResponse.data;
+          setProduct(updatedProduct);
+          setEditedName(updatedProduct.name);
+          setEditedDescription(updatedProduct.description);
+          setEditedPrice(String(updatedProduct.price));
+          setEditedFlavor1(updatedProduct.flavor1);
+          setEditedFlavor2(updatedProduct.flavor2 ?? '');
+          setEditedTags(
+            updatedProduct.tags !== null ? updatedProduct.tags : []
           );
+          notifySuccess('Tarea realizada con éxito');
+          const messageResponse = await revalidatePage(router.asPath);
+          if (messageResponse.error) {
+            notifyError(
+              'Tu producto se actualizó pero no pudimos reflejar los cambios en este momento. Los cambios se reflejarán automáticamente en un minuto'
+            );
+          } else {
+            // const message = messageResponse.data;
+            notifySuccess(
+              `Los cambios se ven reflejados de manera instantánea`
+            );
+          }
         }
+      } else {
+        notifyError('Parece que hubo un error al recolectar tu información');
       }
     } else {
-      notifyError('Parece que hubo un error al recolectar tu información');
+      notifyError('Error al verificar tu sesión');
     }
     setLoadingState(false);
   };

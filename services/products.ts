@@ -44,10 +44,11 @@ export const getOneProduct = async (_id: string): Promise<ServicesResponse> => {
 };
 
 export const createProduct = async (
-  payload: createProductDto
+  payload: createProductDto,
+  token: string
 ): Promise<ServicesResponse> => {
   try {
-    const token = localStorage.getItem('Beseto_token');
+    // // const token = localStorage.getItem('Beseto_token');
     const config: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'application/json',
@@ -75,10 +76,11 @@ export const createProduct = async (
 
 export const updateProduct = async (
   _id: string,
-  payload: UpdateProductDto
+  payload: UpdateProductDto,
+  token: string
 ): Promise<ServicesResponse> => {
   try {
-    const token = localStorage.getItem('Beseto_token');
+    // const token = localStorage.getItem('Beseto_token');
     const config: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'application/json',
