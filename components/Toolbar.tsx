@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import {
@@ -14,24 +14,61 @@ import {
   Drawer,
   ListItemText,
   Button,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import logo from '../public/assets/imgs/common/xs/logo_xs.png';
 // import { signOut } from '../services/auth';
 
 function LoginLogout() {
   const { data: session, status } = useSession();
-  if (status === 'authenticated') {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClickButton = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  if (status === 'loading') {
+    return null;
+  } else if (status === 'authenticated') {
     return (
-      <Button
-        variant="contained"
-        className="bg-beseto-bisque"
-        onClick={() => signOut()}
-      >
-        Cerrar sesión
-      </Button>
+      <Stack direction="row" spacing={1} className="items-center h-full">
+        <Button
+          variant="contained"
+          className="bg-beseto-bisque"
+          onClick={() => signOut()}
+        >
+          Cerrar sesión
+        </Button>
+        <IconButton onClick={handleClickButton}>
+          <KeyboardArrowDownIcon sx={{ color: 'white' }} />
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleClose}>
+            <Link href="/admin">Panel de administración</Link>
+          </MenuItem>
+        </Menu>
+      </Stack>
     );
   }
   return (
