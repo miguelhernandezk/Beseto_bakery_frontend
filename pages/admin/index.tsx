@@ -27,6 +27,7 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { useSession } from 'next-auth/react';
+import Toolbar from '../../components/Toolbar';
 
 type CakeFill = 'single' | 'double' | 'N/A';
 
@@ -139,6 +140,7 @@ export default function AdminSite() {
 
   return (
     <Box className="h-screen">
+      <Toolbar />
       <Head>
         <title>Añadir producto - Beseto</title>
       </Head>

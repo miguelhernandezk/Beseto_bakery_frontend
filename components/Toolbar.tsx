@@ -25,7 +25,7 @@ import logo from '../public/assets/imgs/common/xs/logo_xs.png';
 // import { signOut } from '../services/auth';
 
 function LoginLogout() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
