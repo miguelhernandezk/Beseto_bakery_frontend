@@ -231,7 +231,7 @@ function ProductPage({ initialProduct }: ProductIdProps) {
 
   useEffect(() => {
     onSetUserPrivileges();
-  }, []);
+  }, [session]);
   return (
     <>
       <Head>
