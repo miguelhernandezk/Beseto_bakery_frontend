@@ -20,7 +20,9 @@ import {
   MenuItem,
   FormHelperText,
   SelectChangeEvent,
+  Stack,
 } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Container } from '@mui/system';
@@ -29,6 +31,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Role } from '../interfaces/Enums';
 import { createUser } from '../services/users';
 import { CreateUserDto } from '../interfaces/dtos/User.dto';
+import Link from 'next/link';
 
 export default function SignIn() {
   const { data: session } = useSession();
@@ -45,6 +48,9 @@ export default function SignIn() {
   const [alertMessageForm, setAlertMessageForm] = useState<string>();
   const [birthday, setBirthday] = useState<Date | null>(null);
   const [errorDate, setErrorDate] = useState<boolean>(false);
+  const [uiStage, setUiStage] = useState<'get info' | 'user created'>(
+    'get info'
+  );
 
   /**
    *  Displays a success message if everything went right after logged in
@@ -147,6 +153,7 @@ export default function SignIn() {
         notifyError('No pudimos completar tu solicitud');
       } else {
         notifySuccess('Usuario creado con éxito');
+        setUiStage('user created');
       }
     } else {
       setAlertMessageForm('Por favor revisa los errores');
@@ -172,172 +179,188 @@ export default function SignIn() {
 
       <>
         <Container className="w-full h-screen flex flex-col items-center justify-center text-center home">
-          <Box className={`flex flex-col items-center`}>
-            <Avatar className="">
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Registro
-            </Typography>
-            <Box className="" component="form" onSubmit={handleSubmit}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Dirección de correo"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                disabled={loadingState}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Contraseña"
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                autoComplete="current-password"
-                disabled={loadingState}
-                onBlur={handleLoseFocusPassword}
-                onChange={handleTypeChangePassword}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  ),
-                }}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="RepeatedPassword"
-                label="Repite tu contraseña"
-                type={showPassword ? 'text' : 'password'}
-                id="repeatedPassword"
-                autoComplete="repeatedPassword"
-                disabled={loadingState}
-                onBlur={handleLoseFocusPassword}
-                onChange={handleTypeChangePassword}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? (
-                        <VisibilityOffIcon />
-                      ) : (
-                        <VisibilityIcon />
-                      )}
-                    </IconButton>
-                  ),
-                }}
-              />
-              {alertMessagePassword && (
-                <Typography sx={{ color: 'red' }}>
-                  {alertMessagePassword}
-                </Typography>
-              )}
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="name"
-                label="Nombre"
-                type="name"
-                id="name"
-                autoComplete="current-name"
-                disabled={loadingState}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="lastName"
-                label="Apellído"
-                type="lastName"
-                id="lastName"
-                autoComplete="current-lastName"
-                disabled={loadingState}
-              />
-
-              <DatePicker
-                disableFuture
-                label="Fecha de nacimiento"
-                value={birthday}
-                onChange={handleChangeDate}
-                format="dd-MM-yyyy"
-                minDate={new Date(1950, 0, 1)}
-                onError={handleErrorDateField}
-              />
-              {alertMessageDate && (
-                <Typography sx={{ color: 'red' }}>
-                  {alertMessageDate}
-                </Typography>
-              )}
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="phone"
-                label="Teléfono"
-                type="number"
-                id="phone"
-                autoComplete="current-phone"
-                disabled={loadingState}
-              />
-              {privileges === 'can add roles' && (
-                <FormControl>
-                  <InputLabel id="fill-label">Rol de usuario</InputLabel>
-                  <Select
-                    labelId="role-label"
-                    id="role"
-                    value={newUserRole}
-                    label="Rol de usuario"
-                    onChange={handleChangeNewUserRole}
-                  >
-                    <MenuItem value="admin">Administrador</MenuItem>
-                    <MenuItem value="editor">Editor</MenuItem>
-                    <MenuItem value="customer">Cliente</MenuItem>
-                    <MenuItem value="superuser">Superusuario</MenuItem>
-                  </Select>
-                  <FormHelperText>
-                    Función que tendrá la persona. Este campo solo es visible
-                    para superusuarios y administradores
-                  </FormHelperText>
-                </FormControl>
-              )}
-              {alertMessageForm && (
-                <Typography sx={{ color: 'red' }}>
-                  {alertMessageForm}
-                </Typography>
-              )}
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                disabled={loadingState}
+          {uiStage === 'get info' && (
+            <Box className={`flex flex-col items-center`}>
+              <Avatar className="">
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Registro
+              </Typography>
+              <Box
+                className="flex flex-col space-y-4"
+                component="form"
+                onSubmit={handleSubmit}
               >
-                Crear cuenta
-              </Button>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Dirección de correo"
+                  name="email"
+                  autoComplete="email"
+                  autoFocus
+                  disabled={loadingState}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Contraseña"
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  autoComplete="current-password"
+                  disabled={loadingState}
+                  onBlur={handleLoseFocusPassword}
+                  onChange={handleTypeChangePassword}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="RepeatedPassword"
+                  label="Repite tu contraseña"
+                  type={showPassword ? 'text' : 'password'}
+                  id="repeatedPassword"
+                  autoComplete="repeatedPassword"
+                  disabled={loadingState}
+                  onBlur={handleLoseFocusPassword}
+                  onChange={handleTypeChangePassword}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    ),
+                  }}
+                />
+                {alertMessagePassword && (
+                  <Typography sx={{ color: 'red' }}>
+                    {alertMessagePassword}
+                  </Typography>
+                )}
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="name"
+                  label="Nombre"
+                  type="name"
+                  id="name"
+                  autoComplete="current-name"
+                  disabled={loadingState}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="lastName"
+                  label="Apellído"
+                  type="lastName"
+                  id="lastName"
+                  autoComplete="current-lastName"
+                  disabled={loadingState}
+                />
+
+                <DatePicker
+                  disableFuture
+                  label="Fecha de nacimiento"
+                  value={birthday}
+                  onChange={handleChangeDate}
+                  format="dd-MM-yyyy"
+                  minDate={new Date(1950, 0, 1)}
+                  onError={handleErrorDateField}
+                />
+                {alertMessageDate && (
+                  <Typography sx={{ color: 'red' }}>
+                    {alertMessageDate}
+                  </Typography>
+                )}
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="phone"
+                  label="Teléfono"
+                  type="number"
+                  id="phone"
+                  autoComplete="current-phone"
+                  disabled={loadingState}
+                />
+                {privileges === 'can add roles' && (
+                  <FormControl>
+                    <InputLabel id="fill-label">Rol de usuario</InputLabel>
+                    <Select
+                      labelId="role-label"
+                      id="role"
+                      value={newUserRole}
+                      label="Rol de usuario"
+                      onChange={handleChangeNewUserRole}
+                    >
+                      <MenuItem value="admin">Administrador</MenuItem>
+                      <MenuItem value="editor">Editor</MenuItem>
+                      <MenuItem value="customer">Cliente</MenuItem>
+                      <MenuItem value="superuser">Superusuario</MenuItem>
+                    </Select>
+                    <FormHelperText>
+                      Función que tendrá la persona. Este campo solo es visible
+                      para superusuarios y administradores
+                    </FormHelperText>
+                  </FormControl>
+                )}
+                {alertMessageForm && (
+                  <Typography sx={{ color: 'red' }}>
+                    {alertMessageForm}
+                  </Typography>
+                )}
+                <Button
+                  className="bg-beseto-bisque"
+                  variant="contained"
+                  fullWidth
+                  disabled={loadingState}
+                >
+                  Crear cuenta
+                </Button>
+              </Box>
             </Box>
-          </Box>
+          )}
+
+          {uiStage === 'user created' && (
+            <Stack className={`flex flex-col items-center`} spacing={3}>
+              <Typography>Usuario creado con éxito</Typography>
+              <CheckCircleIcon sx={{ color: 'green' }} />
+              <Button variant="contained" className="bg-beseto-bisque">
+                <Link href="/api/auth/signin">Iniciar sesión</Link>
+              </Button>
+            </Stack>
+          )}
         </Container>
       </>
     </>
