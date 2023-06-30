@@ -49,7 +49,7 @@ function LoginLogout() {
         >
           Cerrar sesión
         </Button>
-        {session.user.role === Role.CUSTOMER && (
+        {session.user.role !== Role.CUSTOMER && (
           <>
             <IconButton onClick={handleClickButton}>
               <KeyboardArrowDownIcon sx={{ color: 'white' }} />
