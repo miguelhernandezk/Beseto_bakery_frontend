@@ -180,7 +180,7 @@ export default function SignIn() {
       <>
         <Container className="w-full h-screen flex flex-col items-center justify-center text-center home">
           {uiStage === 'get info' && (
-            <Box className={`flex flex-col items-center`}>
+            <Box className={`flex flex-col items-center w-full md:w-3/5`}>
               <Avatar className="">
                 <LockOutlinedIcon />
               </Avatar>
@@ -188,7 +188,7 @@ export default function SignIn() {
                 Registro
               </Typography>
               <Box
-                className="flex flex-col space-y-4"
+                className="flex flex-col space-y-4 w-full"
                 component="form"
                 onSubmit={handleSubmit}
               >
