@@ -343,6 +343,7 @@ export default function SignIn() {
                 <Button
                   className="bg-beseto-bisque"
                   variant="contained"
+                  type="submit"
                   fullWidth
                   disabled={loadingState}
                 >
