@@ -3,6 +3,8 @@ import {
   ThemeProvider,
   StyledEngineProvider,
 } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { SessionProvider as AuthProvider } from 'next-auth/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import '@fontsource/roboto/300.css';
@@ -38,12 +40,14 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider session={pageProps.session}>
-      <StyledEngineProvider injectFirst>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </StyledEngineProvider>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </StyledEngineProvider>
+      </LocalizationProvider>
     </AuthProvider>
   );
 }

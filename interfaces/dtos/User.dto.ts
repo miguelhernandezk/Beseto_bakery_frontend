@@ -1,5 +1,6 @@
-export interface User {
-  readonly _id: string;
+import { Product } from '../Product';
+
+export interface CreateUserDto {
   name: string;
   middleName: string;
   lastName: string;
@@ -8,11 +9,5 @@ export interface User {
   email: string;
   password: string;
   phone: string;
-  isVerified: boolean;
-  isActive: boolean;
-}
-
-export interface UserSignin {
-  access_token: string;
-  user: User;
+  cart: Product[];
 }
