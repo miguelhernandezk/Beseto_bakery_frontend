@@ -22,10 +22,11 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import logo from '../public/assets/imgs/common/xs/logo_xs.png';
+import { Role } from '../interfaces/Enums';
 // import { signOut } from '../services/auth';
 
 function LoginLogout() {
-  const { status } = useSession();
+  const { status, data: session } = useSession();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -48,26 +49,30 @@ function LoginLogout() {
         >
           Cerrar sesión
         </Button>
-        <IconButton onClick={handleClickButton}>
-          <KeyboardArrowDownIcon sx={{ color: 'white' }} />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}>
-            <Link href="/admin">Panel de administración</Link>
-          </MenuItem>
-        </Menu>
+        {session.user.role === Role.CUSTOMER && (
+          <>
+            <IconButton onClick={handleClickButton}>
+              <KeyboardArrowDownIcon sx={{ color: 'white' }} />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>
+                <Link href="/admin">Panel de administración</Link>
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </Stack>
     );
   }
