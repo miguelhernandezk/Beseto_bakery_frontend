@@ -28,6 +28,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { useSession } from 'next-auth/react';
 import Toolbar from '../../components/Toolbar';
+import { Role } from '../../interfaces/Enums';
 
 type CakeFill = 'single' | 'double' | 'N/A';
 
@@ -330,6 +331,11 @@ export const getServerSideProps: GetServerSideProps<object> = async (
   context
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
+  if (session && session.user.role === Role.CUSTOMER) {
+    return {
+      notFound: true,
+    };
+  }
   if (!session) {
     return {
       redirect: {
