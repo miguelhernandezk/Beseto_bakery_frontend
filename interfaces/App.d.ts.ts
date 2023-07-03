@@ -14,6 +14,6 @@ export interface SharedStateContext {
   removeFromCart: (
     token: string,
     productId: string,
-    amount = 1
+    amount: number
   ) => Promise<void>;
 }
