@@ -13,6 +13,8 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import '../styles/globals.css';
 import { AppProps } from 'next/app';
+import AppContext from '../context/AppContext';
+import useSharedState from '../hooks/useSharedState';
 
 const theme = createTheme({
   palette: {
@@ -40,14 +42,16 @@ const theme = createTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider session={pageProps.session}>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </StyledEngineProvider>
-      </LocalizationProvider>
+      <AppContext.Provider value={useSharedState()}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Component {...pageProps} />
+            </ThemeProvider>
+          </StyledEngineProvider>
+        </LocalizationProvider>
+      </AppContext.Provider>
     </AuthProvider>
   );
 }

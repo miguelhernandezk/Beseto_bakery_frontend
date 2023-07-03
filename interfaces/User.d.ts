@@ -1,3 +1,5 @@
+import { Product } from './Product';
+
 export interface User {
   readonly _id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface User {
   email: string;
   password: string;
   phone: string;
+  cart: UserCartItemDto[];
   isVerified: boolean;
   isActive: boolean;
 }
@@ -15,4 +18,14 @@ export interface User {
 export interface UserSignin {
   access_token: string;
   user: User;
+}
+
+export interface CartItemDto {
+  product: string;
+  amount: number;
+}
+
+export interface CartItem {
+  product: Product;
+  amount: number;
 }

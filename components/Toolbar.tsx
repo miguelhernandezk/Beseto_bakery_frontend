@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Stack,
@@ -16,13 +15,18 @@ import {
   Button,
   Menu,
   MenuItem,
+  Badge,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import logo from '../public/assets/imgs/common/xs/logo_xs.png';
 import { Role } from '../interfaces/Enums';
+import AppContext from '../context/AppContext';
+import { getUserCart } from '../services/users';
+import { useRouter } from 'next/router';
 // import { signOut } from '../services/auth';
 
 function LoginLogout() {
@@ -89,6 +93,8 @@ function LoginLogout() {
 
 function Toolbar() {
   const router = useRouter();
+  const { status, data: session } = useSession();
+  const { cart, setCart } = useContext(AppContext);
 
   const [openMenu, setOpenMenu] = useState(false);
   const navigationLinks: string[] = [
@@ -107,6 +113,24 @@ function Toolbar() {
   const toggleDrawer = () => {
     setOpenMenu(!openMenu);
   };
+
+  const onClickCart = () => {
+    router.push('/carrito');
+  };
+
+  const onSetCart = async () => {
+    if (session && status === 'authenticated') {
+      const cartResponse = await getUserCart(session.access_token);
+      if (cartResponse.error) {
+        cart;
+      } else {
+        setCart(cartResponse.data);
+      }
+    }
+  };
+  useEffect(() => {
+    onSetCart();
+  }, [session, status]);
 
   const list = (anchor: unknown) => (
     <Box
@@ -176,7 +200,27 @@ function Toolbar() {
               ))}
             </Tabs>
           </List>
-          <LoginLogout />
+          <Stack direction="row">
+            <LoginLogout />
+            {session && status === 'authenticated' && (
+              <IconButton
+                aria-label="cart"
+                sx={{ color: 'white' }}
+                onClick={onClickCart}
+              >
+                <Badge
+                  badgeContent={cart.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue.amount,
+                    0
+                  )}
+                  color="primary"
+                >
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            )}
+          </Stack>
         </Stack>
       </Container>
     </Box>

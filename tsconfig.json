@@ -1,12 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": [
-      "ES6",
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["ES6", "dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -23,12 +18,6 @@
     "strictNullChecks": true,
     "moduleResolution": "node"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

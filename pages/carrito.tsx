@@ -8,33 +8,127 @@ import {
   TableCell,
   TableBody,
   IconButton,
+  Box,
+  TextField,
 } from '@mui/material';
+import { useSession } from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
 import HeroHeader from '../components/HeroHeader';
-import imgPastel from '../public/assets/imgs/Home/card2.jpg';
 import Layout from '../components/Layout';
+import AppContext from '../context/AppContext';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import 'react-toastify/dist/ReactToastify.css';
+import Footer from '../components/Footer';
+import { CartItem, CartItemDto } from '../interfaces/User';
+import { updateCart } from '../services/users';
+import { ToastContainer } from 'react-toastify';
 
 function Carrito() {
-  function createData(
-    name: string,
-    calories: number,
-    fat: number,
-    carbs: number,
-    protein: number
-  ) {
-    return { name, calories, fat, carbs, protein };
-  }
+  const { cart, setCart, notifyError, notifySuccess } = useContext(AppContext);
+  const { data: session, status } = useSession();
+  const [amounts, setAmounts] = useState<(number | string)[]>([]);
+  const [tempAmount, setTempAmount] = useState<number>();
 
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-  ];
+  const handleChangeAmount = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    indexOfElement: number
+  ) => {
+    setTempAmount(cart[indexOfElement].amount);
+    const newAmounts = [...amounts];
+    newAmounts[indexOfElement] = event.target.value;
+    setAmounts(newAmounts);
+  };
+
+  const handleLeftAmountField = async (indexOfElement: number) => {
+    const newAmountsNumber: number[] = [];
+    const newAmounts: (string | number)[] = [];
+    amounts.forEach((amount) => {
+      newAmountsNumber.push(Number(amount));
+      newAmounts.push(amount);
+    });
+    if (
+      newAmountsNumber[indexOfElement] &&
+      newAmountsNumber[indexOfElement] > 0
+    ) {
+      const newCart: CartItem[] = [];
+      cart.forEach((item, index) =>
+        newCart.push({
+          product: item.product,
+          amount: newAmountsNumber[index],
+        })
+      );
+      if (session && status === 'authenticated') {
+        const payload: CartItemDto[] = [];
+        newCart.map((item) =>
+          payload.push({ product: item.product._id, amount: item.amount })
+        );
+        const updatedCartResponse = await updateCart(
+          session?.access_token,
+          payload
+        );
+        if (updatedCartResponse.error) {
+          notifyError('No pudimos actualizar tu carrito');
+        } else {
+          notifySuccess('Carrito actualizado');
+          setCart(newCart);
+        }
+      }
+    } else {
+      if (tempAmount && amounts[indexOfElement] === '') {
+        notifyError(
+          'No puedes dejar este campo en blanco. Regresando al valor anterior'
+        );
+        newAmounts[indexOfElement] = tempAmount;
+        setAmounts(newAmounts);
+      }
+      if (
+        tempAmount &&
+        (amounts[indexOfElement] === 0 ||
+          amounts[indexOfElement] === '0' ||
+          Number(amounts[indexOfElement]) < 0)
+      ) {
+        notifyError('Valor no válido');
+        newAmounts[indexOfElement] = tempAmount;
+        setAmounts(newAmounts);
+      }
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    const newCart: CartItem[] = cart.filter(
+      (cartItem) => cartItem.product._id !== productId
+    );
+    const newCartDto: CartItemDto[] = newCart.map((fullCartItem) => ({
+      product: fullCartItem.product._id,
+      amount: fullCartItem.amount,
+    }));
+    if (session && status === 'authenticated') {
+      const updatedCartResponse = await updateCart(
+        session?.access_token,
+        newCartDto
+      );
+      if (updatedCartResponse.error)
+        notifyError('No pudimos actualizar tu carrito');
+      else {
+        notifySuccess('Objeto eliminado correctamente');
+        setCart(newCart);
+      }
+    }
+  };
+
+  useEffect(() => {
+    setAmounts(cart.map((cartItem) => cartItem.amount));
+  }, [cart]);
+
   return (
     <>
       <Layout>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop
+        />
         <HeroHeader />
         <Container className="pt-16">
           <TableContainer component={Paper}>
@@ -43,31 +137,46 @@ function Carrito() {
                 <TableRow>
                   <TableCell />
                   <TableCell />
-                  <TableCell align="left">Product</TableCell>
-                  <TableCell align="left">Price</TableCell>
-                  <TableCell align="left">Quantity</TableCell>
+                  <TableCell align="left">Producto</TableCell>
+                  <TableCell align="left">Precio</TableCell>
+                  <TableCell align="left">Cantidad</TableCell>
                   <TableCell align="left">Subtotal</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {cart.map((cartItem, index) => (
                   <TableRow
-                    key={row.name}
+                    key={cartItem.product.name}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      <IconButton>
+                      <IconButton
+                        onClick={() =>
+                          handleDeleteProduct(cartItem.product._id)
+                        }
+                      >
                         <CloseIcon />
                       </IconButton>
                     </TableCell>
                     <TableCell align="right">
-                      <img src={imgPastel.src} className="w-8" alt={row.name} />
+                      <img
+                        src={cartItem.product.picture[0]}
+                        className="w-8"
+                        alt={cartItem.product.name}
+                      />
                     </TableCell>
-                    <TableCell align="left">{row.name}</TableCell>
-                    <TableCell align="left">{row.carbs}</TableCell>
-                    <TableCell align="left">{row.protein}</TableCell>
+                    <TableCell align="left">{cartItem.product.name}</TableCell>
+                    <TableCell align="left">{cartItem.product.price}</TableCell>
                     <TableCell align="left">
-                      {(row.carbs * row.protein).toFixed(2)}
+                      <TextField
+                        type="number"
+                        value={amounts[index]}
+                        onChange={(event) => handleChangeAmount(event, index)}
+                        onBlur={() => handleLeftAmountField(index)}
+                      />
+                    </TableCell>
+                    <TableCell align="left">
+                      {cartItem.amount * cartItem.product.price}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -75,6 +184,9 @@ function Carrito() {
             </Table>
           </TableContainer>
         </Container>
+        <Box className="mt-8">
+          <Footer />
+        </Box>
       </Layout>
     </>
   );
