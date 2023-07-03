@@ -10,6 +10,9 @@ import {
   IconButton,
   Box,
   TextField,
+  Button,
+  Stack,
+  Typography,
 } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import CloseIcon from '@mui/icons-material/Close';
@@ -22,6 +25,7 @@ import Footer from '../components/Footer';
 import { CartItem, CartItemDto } from '../interfaces/User';
 import { updateCart } from '../services/users';
 import { ToastContainer } from 'react-toastify';
+import Link from 'next/link';
 
 function Carrito() {
   const { cart, setCart, notifyError, notifySuccess } = useContext(AppContext);
@@ -191,6 +195,32 @@ function Carrito() {
               </TableBody>
             </Table>
           </TableContainer>
+          <Stack alignItems="flex-end">
+            <Typography variant="h5" className="mt-10">
+              Total:{' '}
+              {new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN',
+              }).format(
+                cart.reduce(
+                  (accumulator, currentItem) =>
+                    accumulator +
+                    currentItem.amount * currentItem.product.price,
+                  0
+                )
+              )}
+            </Typography>
+            <Box>
+              <Link href="/checkout">
+                <Button
+                  variant="contained"
+                  className="bg-beseto-dark-gray text-white grow mt-10 flex flex-col justify-center items-center"
+                >
+                  Realizar pedido
+                </Button>
+              </Link>
+            </Box>
+          </Stack>
         </Container>
         <Box className="mt-8">
           <Footer />
