@@ -6,7 +6,11 @@ export interface SharedStateContext {
   setCart: Dispatch<SetStateAction<CartItem[]>>;
   notifyError: (msg: string) => void;
   notifySuccess: (msg: string) => void;
-  addToCart: (token: string, productId: string, amount = 1) => Promise<void>;
+  addToCart: (
+    token: string,
+    productId: string,
+    amount: number
+  ) => Promise<void>;
   removeFromCart: (
     token: string,
     productId: string,

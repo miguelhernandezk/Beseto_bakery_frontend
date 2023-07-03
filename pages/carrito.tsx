@@ -166,7 +166,12 @@ function Carrito() {
                       />
                     </TableCell>
                     <TableCell align="left">{cartItem.product.name}</TableCell>
-                    <TableCell align="left">{cartItem.product.price}</TableCell>
+                    <TableCell align="left">
+                      {new Intl.NumberFormat('es-MX', {
+                        style: 'currency',
+                        currency: 'MXN',
+                      }).format(cartItem.product.price)}
+                    </TableCell>
                     <TableCell align="left">
                       <TextField
                         type="number"
@@ -176,7 +181,10 @@ function Carrito() {
                       />
                     </TableCell>
                     <TableCell align="left">
-                      {cartItem.amount * cartItem.product.price}
+                      {new Intl.NumberFormat('es-MX', {
+                        style: 'currency',
+                        currency: 'MXN',
+                      }).format(cartItem.amount * cartItem.product.price)}
                     </TableCell>
                   </TableRow>
                 ))}
