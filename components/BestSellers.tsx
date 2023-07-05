@@ -21,10 +21,14 @@ function BestSellers() {
       setLoading(false);
       return undefined;
     } else {
-      const reversedProducts = [...productsResponse.data].reverse();
+      const reversedProducts: Product[] = [...productsResponse.data].reverse();
       const mainProducts: Product[] = [];
       for (let i = 0; i < 6; i++) {
-        mainProducts.push(reversedProducts[i]);
+        mainProducts.push(
+          reversedProducts.filter(
+            (product) => product.category !== 'Personalizados y eventos'
+          )[i]
+        );
       }
       setProducts(mainProducts);
       setLoading(false);
