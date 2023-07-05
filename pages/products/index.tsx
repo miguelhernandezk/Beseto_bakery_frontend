@@ -22,7 +22,14 @@ export default function Products() {
       return undefined;
     } else {
       setLoading(false);
-      setProducts(productsResponse.data.reverse());
+      const newProducts: Product[] = productsResponse.data;
+      setProducts(
+        newProducts
+          .reverse()
+          .filter(
+            (product) => product.category.name !== 'Personalizados y eventos'
+          )
+      );
     }
   };
   useEffect(() => {
