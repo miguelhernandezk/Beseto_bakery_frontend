@@ -26,7 +26,7 @@ function BestSellers() {
       for (let i = 0; i < 6; i++) {
         mainProducts.push(
           reversedProducts.filter(
-            (product) => product.category !== 'Personalizados y eventos'
+            (product) => product.category.name !== 'Personalizados y eventos'
           )[i]
         );
       }
