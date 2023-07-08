@@ -59,8 +59,11 @@ export const getErrorText = (
     error.helperText ===
     'The request was made and the server responded with a status code that falls out of the range of 2xx'
   ) {
-    if (error.data.data !== undefined && error.data.data.detail !== undefined) {
-      return error.data.data.detail;
+    if (
+      error.data.data !== undefined &&
+      error.data.data.message !== undefined
+    ) {
+      return error.data.data.message;
     } else
       return 'ERROR - Please contact and admin and provide the following error code: EC001';
   } else if (
@@ -84,9 +87,9 @@ export const getStatusCode = (
   ) {
     if (
       error.data.data !== undefined &&
-      error.data.data.error_code !== undefined
+      error.data.data.statusCode !== undefined
     ) {
-      return error.data.data.error_code;
+      return error.data.data.statusCode;
     } else {
       return -1;
     }
