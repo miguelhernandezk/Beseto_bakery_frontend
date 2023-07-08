@@ -77,6 +77,9 @@ function LoginLogout() {
               <MenuItem>
                 <Link href="/admin/point-of-sale">Punto de venta</Link>
               </MenuItem>
+              <MenuItem>
+                <Link href="/admin/orders">Órdenes</Link>
+              </MenuItem>
             </Menu>
           </>
         )}

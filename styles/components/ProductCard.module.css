@@ -1,7 +1,0 @@
-.price::before {
-  content: '$';
-}
-
-.price::after {
-  content: '.00 MXN';
-}
