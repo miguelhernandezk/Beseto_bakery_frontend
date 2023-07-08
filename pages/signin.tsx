@@ -1,6 +1,6 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
+import { signIn } from 'next-auth/react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import {
   Avatar,
   Button,
@@ -14,42 +14,18 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Container } from '@mui/system';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { login, signinStatus } from '../services/auth';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
 
 export default function SignIn() {
-  const router = useRouter();
   const [loadingState, setLoadingState] = useState<boolean>(false);
-
-  /**
-   *  Displays a success message if everything went right after logged in
-   */
-  const notifySuccess = (msg = 'Tarea realizada exitosamente') =>
-    toast.success(msg);
 
   /**
    * Displays an error message if something went wrong
    * @param {JSX.Element} msg - Message to be displayed
    */
   const notifyError = (msg = 'Oops, something went wrong') => toast.error(msg);
-
-  /**
-   *  If already logged, redirects to previous page
-   */
-  const handleSignInStatus = async (route?: string) => {
-    const validSignInResponse = await signinStatus('Temporal string');
-    if (validSignInResponse.error) {
-      notifyError('No pudimos iniciar tu sesión');
-    } else {
-      notifySuccess('Ya habías iniciado sesión');
-      router.push(route !== undefined ? route : '/');
-    }
-  };
-
-  useEffect(() => {
-    if (typeof router.query.next === 'string') {
-      handleSignInStatus(router.query.next);
-    } else handleSignInStatus();
-  }, [router]);
 
   /**
    *  Gets data from form and connects with API in order to log in
@@ -67,16 +43,11 @@ export default function SignIn() {
       typeof password === 'string'
     ) {
       if (email) {
-        const loginStatusResponse = await login(email, password);
-        if (loginStatusResponse.error) {
-          notifyError();
-        } else {
-          notifySuccess();
-          router.replace(`${router.query.next ?? '/'}`);
-        }
-        setLoadingState(false);
-      } else {
-        notifyError('The email you provided is not valid');
+        signIn('credentials', {
+          username: email,
+          password: password,
+          callbackUrl: '/',
+        });
         setLoadingState(false);
       }
     } else {
@@ -98,7 +69,6 @@ export default function SignIn() {
         hideProgressBar
         newestOnTop
       />
-
       <>
         <Container className="w-full flex flex-col items-center justify-center text-center home">
           <Box className={`flex flex-col items-center`}>
@@ -153,3 +123,22 @@ export default function SignIn() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<object> = async (
+  context
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+  return {
+    props: {
+      session,
+    },
+  };
+};

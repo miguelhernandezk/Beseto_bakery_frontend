@@ -28,3 +28,8 @@ export interface CustomAxiosErrorData<T = boolean> {
   request?: any;
   errorMessage?: string;
 }
+
+export interface VerificationRta {
+  alreadyVerified: boolean;
+  verified: true;
+}

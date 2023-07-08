@@ -8,6 +8,9 @@ export const authOptions: NextAuthOptions = {
   debug: true,
   session: {},
   jwt: {},
+  pages: {
+    signIn: '/signin',
+  },
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({

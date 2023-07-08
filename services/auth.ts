@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { LoginPayload } from '../interfaces/dtos/Login';
-import { ServicesResponse } from '../interfaces/Responses';
+import { ServicesResponse, VerificationRta } from '../interfaces/Responses';
 import { User, UserSignin } from '../interfaces/User';
 import { handleApiErrors } from '../utils/handleApiErrors';
 
@@ -69,6 +69,25 @@ export const signinStatus = async (
     const response: ServicesResponse<User> = {
       error: false,
       data: userInfo,
+      helperText: null,
+    };
+    return response;
+  } catch (e) {
+    return handleApiErrors(e);
+  }
+};
+
+export const verify = async (code: string): Promise<ServicesResponse> => {
+  try {
+    const { data } = await axios.post(
+      `${backendUrl}/auth/verify-email/${code}`
+    );
+
+    // "data Type"
+    const verifiedInfo: VerificationRta = data;
+    const response: ServicesResponse<VerificationRta> = {
+      error: false,
+      data: verifiedInfo,
       helperText: null,
     };
     return response;
