@@ -2,6 +2,10 @@ import NextAuth from 'next-auth';
 import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { login } from '../../../services/auth';
+import {
+  BackendError,
+  CustomAxiosErrorData,
+} from '../../../interfaces/Responses';
 
 export const authOptions: NextAuthOptions = {
   theme: { colorScheme: 'dark' },
@@ -31,6 +35,20 @@ export const authOptions: NextAuthOptions = {
         if (credentials) {
           const res = await login(credentials?.username, credentials?.password);
           if (res.error) {
+            const errorhelperText = res.helperText;
+            if (
+              errorhelperText ===
+              'The request was made and the server responded with a status code that falls out of the range of 2xx'
+            ) {
+              const errorInfo: CustomAxiosErrorData<BackendError> = res.data;
+              if (
+                errorInfo.data?.message.includes(
+                  'Por favor confirma tu dirección de correo electrónico antes de poder iniciar sesión.'
+                )
+              )
+                throw new Error(JSON.stringify(errorInfo.data.message));
+              return null;
+            }
             return null;
           } else {
             const user: User = await res.data;

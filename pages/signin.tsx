@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { FormEvent, useEffect, useState } from 'react';
+import { SignInResponse, signIn } from 'next-auth/react';
 import Head from 'next/head';
 import {
   Avatar,
@@ -12,20 +12,17 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Container } from '@mui/system';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
+import { useRouter } from 'next/router';
 
 export default function SignIn() {
+  const router = useRouter();
   const [loadingState, setLoadingState] = useState<boolean>(false);
-
-  /**
-   * Displays an error message if something went wrong
-   * @param {JSX.Element} msg - Message to be displayed
-   */
-  const notifyError = (msg = 'Oops, something went wrong') => toast.error(msg);
+  const [errorMessage, setErrorMessage] = useState<string>();
 
   /**
    *  Gets data from form and connects with API in order to log in
@@ -42,20 +39,39 @@ export default function SignIn() {
       typeof email === 'string' &&
       typeof password === 'string'
     ) {
-      if (email) {
+      if (email && password) {
         signIn('credentials', {
           username: email,
           password: password,
+          redirect: false,
+        }).then((response: SignInResponse) => {
+          if (response.error) {
+            setErrorMessage(
+              response.error === 'CredentialsSignin'
+                ? 'Datos de usuario incorrectos'
+                : response.error
+            );
+          } else {
+            response.url ? router.push(response.url) : router.push('/');
+          }
         });
+
         setLoadingState(false);
       }
     } else {
-      notifyError(
-        'You did not provide credentials or the credentials provided are not in valid format'
-      );
+      setErrorMessage('Verifica la información ingresada');
       setLoadingState(false);
     }
   };
+  useEffect(() => {
+    if (router.isReady && router.query.error) {
+      router.query.error && router.query.error === 'CredentialsSignin'
+        ? setErrorMessage('Datos de inicio de sesión incorrectos  ')
+        : setErrorMessage(
+            'Tuvimos problemas para iniciar tu sesión. Por favor contacta a soporte.'
+          );
+    }
+  }, [router.isReady]);
 
   return (
     <>
@@ -70,14 +86,14 @@ export default function SignIn() {
       />
       <>
         <Container className="w-full flex flex-col items-center justify-center text-center home">
-          <Box className={`flex flex-col items-center`}>
+          <Box className={`flex flex-col items-center max-w-lg w-full`}>
             <Avatar className="">
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Iniciar sesión
             </Typography>
-            <Box className="" component="form" onSubmit={handleSubmit}>
+            <Box className="w-full" component="form" onSubmit={handleSubmit}>
               <TextField
                 margin="normal"
                 required
@@ -100,6 +116,11 @@ export default function SignIn() {
                 autoComplete="current-password"
                 disabled={loadingState}
               />
+              {errorMessage && (
+                <Box className="inline-error-message">
+                  <Typography>{errorMessage}</Typography>
+                </Box>
+              )}
               <Button
                 type="submit"
                 fullWidth

@@ -14,9 +14,9 @@ export interface ServicesResponse<T = any> {
 }
 
 export interface BackendError {
-  detail: string;
-  error: boolean;
-  error_code: number;
+  error: string;
+  message: string;
+  statusCode: number;
 }
 
 export interface CustomAxiosErrorData<T = boolean> {

@@ -77,6 +77,7 @@ export const signinStatus = async (
   }
 };
 
+// Sends a code to backend to verify
 export const verify = async (code: string): Promise<ServicesResponse> => {
   try {
     const { data } = await axios.post(
