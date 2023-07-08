@@ -17,7 +17,11 @@ export const createOrder = async (
         Authorization: `Bearer ${token}`,
       },
     };
-    const { data } = await axios.post(`${backendUrl}/orders/`, payload, config);
+    const { data } = await axios.post(
+      `${backendUrl}/profile/create-order/`,
+      payload,
+      config
+    );
 
     // "data Type"
     const createdOrder: Order = data;
