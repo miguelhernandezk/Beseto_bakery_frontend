@@ -13,8 +13,6 @@ import {
 } from '@mui/material';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import Head from 'next/head';
 import Footer from '../components/Footer';
@@ -172,12 +170,6 @@ export default function AdminSite() {
       <Head>
         <title>Checkout - Beseto</title>
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
       <Box className="flex flex-col h-full">
         <Container className="w-full flex flex-col items-center justify-center text-center grow">
           {uiState === 'Get info' && (

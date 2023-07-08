@@ -26,8 +26,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Container } from '@mui/system';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { Role } from '../interfaces/Enums';
 import { createUser } from '../services/users';
 import { CreateUserDto } from '../interfaces/dtos/User.dto';
@@ -170,12 +169,6 @@ export default function SignIn() {
       <Head>
         <title>Crear cuenta - Beseto</title>
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
 
       <>
         <Container className="w-full h-screen flex flex-col items-center justify-center text-center home">

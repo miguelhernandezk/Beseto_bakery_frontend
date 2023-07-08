@@ -12,8 +12,6 @@ import {
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Container } from '@mui/system';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
@@ -78,12 +76,6 @@ export default function SignIn() {
       <Head>
         <title>Iniciar sesión</title>
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
       <>
         <Container className="w-full flex flex-col items-center justify-center text-center home">
           <Box className={`flex flex-col items-center max-w-lg w-full`}>

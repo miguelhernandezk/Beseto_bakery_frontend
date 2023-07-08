@@ -21,11 +21,9 @@ import HeroHeader from '../components/HeroHeader';
 import Layout from '../components/Layout';
 import AppContext from '../context/AppContext';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
 import Footer from '../components/Footer';
 import { CartItem, CartItemDto } from '../interfaces/User';
 import { updateCart } from '../services/users';
-import { ToastContainer } from 'react-toastify';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
@@ -136,12 +134,6 @@ function Carrito() {
   return (
     <>
       <Layout>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar
-          newestOnTop
-        />
         <HeroHeader />
         <Container className="pt-16">
           {cart.length > 0 && uiState === 'info loaded' && (

@@ -2,7 +2,6 @@ import React from 'react';
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
 import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
-import 'react-toastify/dist/ReactToastify.css';
 
 import ProductExamples from '../components/ProductExamples';
 import HeroHeader from '../components/HeroHeader';
@@ -13,7 +12,6 @@ import BestSellers from '../components/BestSellers';
 import gourmet from '../public/assets/imgs/Home/gourmet.jpg';
 import panaderia from '../public/assets/imgs/Home/panaderia.jpeg';
 import Layout from '../components/Layout';
-import { ToastContainer } from 'react-toastify';
 
 function Home() {
   return (
@@ -24,12 +22,6 @@ function Home() {
         </Head>
         <HeroHeader />
         {/* <MainHeader /> */}
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar
-          newestOnTop
-        />
 
         <Box
           component="main"

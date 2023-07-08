@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { verify } from '../services/auth';
 import { VerificationRta } from '../interfaces/Responses';
 import { signIn, useSession } from 'next-auth/react';
@@ -49,12 +48,6 @@ export default function SignIn() {
       <Head>
         <title>Verify Your account</title>
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
     </>
   );
 }

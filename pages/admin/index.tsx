@@ -14,8 +14,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Box } from '@mui/system';
 import { FormEvent, useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 import { ProductDto } from '../../interfaces/dtos/Product.dto';
 import { createProduct } from '../../services/products';
@@ -145,12 +144,6 @@ export default function AdminSite() {
       <Head>
         <title>Añadir producto - Beseto</title>
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
       <Box className="flex flex-col h-full">
         <Container className="w-full flex flex-col items-center justify-center text-center grow">
           {localUiState === UiStates.ENTER_DATA && (

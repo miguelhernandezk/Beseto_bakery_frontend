@@ -15,8 +15,7 @@ import {
 import { Rating } from '@mui/material';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 
 import Toolbar from '../../components/Toolbar';
 import {
@@ -247,12 +246,6 @@ function ProductPage({ initialProduct }: ProductIdProps) {
         />
         <meta property="og:image" content={product.picture[0]} />
       </Head>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar
-        newestOnTop
-      />
       <Toolbar />
       <Container sx={{ py: 8 }}>
         {product !== null && product !== undefined ? (
