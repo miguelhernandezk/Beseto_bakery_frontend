@@ -15,6 +15,7 @@ export interface Order {
   totalWithDiscount: number;
   deliveryDate: Date;
   customerInstructions: string;
+  credit: number;
 }
 
 export interface CartItemInOrder {
@@ -36,6 +37,7 @@ export interface CreateOrderDto {
   totalWithDiscount: number;
   deliveryDate: Date;
   customerInstructions: string;
+  credit: number;
 }
 
 export interface CartItemInOrderDto {

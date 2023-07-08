@@ -216,7 +216,7 @@ export default function AdminSite() {
                           {new Intl.NumberFormat('es-MX', {
                             style: 'currency',
                             currency: 'MXN',
-                          }).format(0)}
+                          }).format(order.credit)}
                         </Typography>
                       </Typography>
                     </CardContent>

@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   Radio,
 } from '@mui/material';
-import { FormEvent, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from 'react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import Head from 'next/head';
@@ -32,19 +32,24 @@ import { updateCart } from '../services/users';
 export enum UiStates {
   ENTER_DATA = 0,
   CREATED = 1,
+  NO_ITEMS = 3,
 }
 
 export default function AdminSite() {
   const { data: session, status } = useSession();
   const { cart, setCart, notifyError, notifySuccess } = useContext(AppContext);
   const [orderDto, setOrderDto] = useState<CreateOrderDto>();
-  const [uiState, setUiState] = useState<'Get info' | 'Success'>('Get info');
+  const [uiState, setUiState] = useState<UiStates>(UiStates.ENTER_DATA);
   const [productsInCheckout, setProductsInCheckout] = useState<
     CartItemInOrderDto[]
   >([]);
   const [newDeliveryDate, setNewDeliveryDate] = useState<Date | null>();
   const [alertMessageDate, setAlertMessageDate] = useState<string>();
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [clientBalance, setClientBalance] = useState<number>(0);
+  const [receivedMoney, setReceivedMoney] = useState<number>(0);
+  const [receivedMoneyField, setReceivedMoneyField] = useState<string>();
+  const [totalMoneyOrder, setTotalMoneyOrder] = useState<number>(0);
 
   const handleChangeDate = (newValue: Date | null) => {
     if (newValue) {
@@ -54,6 +59,14 @@ export default function AdminSite() {
       setNewDeliveryDate(null);
       setAlertMessageDate('Por favor ingresa tu fecha de nacimiento');
     }
+  };
+
+  const handleChangeReceivedMoney = (
+    event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    setReceivedMoneyField(event.target.value);
+    setReceivedMoney(Number(event.target.value));
+    setClientBalance(Number(event.target.value) - totalMoneyOrder);
   };
 
   const runValidations = (event: FormEvent<HTMLFormElement>) => {
@@ -90,6 +103,8 @@ export default function AdminSite() {
       const streetNumber = data.get('street-number')?.toString().trim();
       const colonia = data.get('colonia')?.toString().trim();
       const zipCode = data.get('zip-code')?.toString().trim();
+      setClientBalance(receivedMoney - totalMoneyOrder);
+
       const customerInstructions = data
         .get('additional-info')
         ?.toString()
@@ -105,18 +120,11 @@ export default function AdminSite() {
           zipCode,
         ].join(' '),
         cart: [...productsInCheckout],
-        total: productsInCheckout.reduce(
-          (accumulator, currentValue) =>
-            accumulator + currentValue.amount * currentValue.currentPrice,
-          0
-        ),
-        totalWithDiscount: productsInCheckout.reduce(
-          (accumulator, currentValue) =>
-            accumulator + currentValue.amount * currentValue.currentPrice,
-          0
-        ),
+        total: totalMoneyOrder,
+        totalWithDiscount: totalMoneyOrder,
         customerInstructions: customerInstructions ? customerInstructions : '',
         deliveryDate: newDeliveryDate ? newDeliveryDate : new Date(),
+        credit: clientBalance >= 0 ? 0 : clientBalance * -1,
       };
       setOrderDto(newOrderDto);
       const createdOrderResponse = await createOrder(
@@ -127,7 +135,7 @@ export default function AdminSite() {
         notifyError('Tuvimos problemas al crear tu orden');
       } else {
         notifySuccess('Orden creada');
-        setUiState('Success');
+        setUiState(UiStates.CREATED);
         setCart([]);
       }
       await updateCart(session.access_token, []);
@@ -150,11 +158,15 @@ export default function AdminSite() {
         totalWithDiscount: 0,
         deliveryDate: new Date(),
         customerInstructions: '',
+        credit: 0,
       } as CreateOrderDto);
     }
   }, [session, status]);
 
   useEffect(() => {
+    if (!cart || cart.length === 0) {
+      if (uiState !== UiStates.CREATED) setUiState(UiStates.NO_ITEMS);
+    }
     const products: CartItemInOrderDto[] = cart.map((itemInCart) => ({
       product: itemInCart.product._id,
       amount: itemInCart.amount,
@@ -162,8 +174,16 @@ export default function AdminSite() {
     }));
     if (products) {
       setProductsInCheckout(products);
+      const newTotalMoneyOrder = products.reduce(
+        (accumulator, currentValue) =>
+          accumulator + currentValue.amount * currentValue.currentPrice,
+        0
+      );
+      setTotalMoneyOrder(newTotalMoneyOrder);
+      setClientBalance(receivedMoney - totalMoneyOrder);
     }
   }, [cart]);
+
   return (
     <Box className="h-screen">
       <Toolbar />
@@ -172,7 +192,7 @@ export default function AdminSite() {
       </Head>
       <Box className="flex flex-col h-full">
         <Container className="w-full flex flex-col items-center justify-center text-center grow">
-          {uiState === 'Get info' && (
+          {uiState === UiStates.ENTER_DATA && (
             <>
               <Typography variant="h3" alignSelf="flex-start">
                 Checkout
@@ -239,66 +259,72 @@ export default function AdminSite() {
                       disabled={loadingState}
                     />
                   </Stack>
-                  <Box>
-                    <DateTimePicker
-                      label="Fecha y hora de entrega"
-                      disablePast
-                      format="dd-MM-yyyy HH:mm"
-                      value={newDeliveryDate}
-                      onError={(error) => {
-                        error
-                          ? notifyError(
-                              'Revisa el valor ingresado en la fecha y hora de entrega'
-                            )
-                          : null;
-                        setAlertMessageDate('Verifica la fecha de entrega');
-                      }}
-                      onChange={handleChangeDate}
-                    />
-                    {alertMessageDate && (
-                      <Typography sx={{ color: 'red' }}>
-                        {alertMessageDate}
-                      </Typography>
-                    )}
-                  </Box>
-                  <FormControl>
-                    <FormLabel
-                      required
-                      id="radio-button-group-payment-method"
-                      color="secondary"
-                    >
-                      Forma de pago
-                    </FormLabel>
-                    <RadioGroup
-                      aria-labelledby="radio-button-group-payment-method-label"
-                      defaultValue="cash"
-                      name="radio-buttons-group"
-                    >
-                      <FormControlLabel
-                        value="cash"
-                        control={<Radio />}
-                        label="Efectivo"
+                  <Stack
+                    direction="row"
+                    justifyContent="space-around"
+                    alignItems="center"
+                  >
+                    <FormControl>
+                      <FormLabel
+                        required
+                        id="radio-button-group-payment-method"
+                        color="secondary"
+                      >
+                        Forma de pago
+                      </FormLabel>
+                      <RadioGroup
+                        aria-labelledby="radio-button-group-payment-method-label"
+                        defaultValue="cash"
+                        name="radio-buttons-group"
+                      >
+                        <FormControlLabel
+                          value="cash"
+                          control={<Radio />}
+                          label="Efectivo"
+                        />
+                        <FormControlLabel
+                          value="credit/debit card"
+                          control={<Radio />}
+                          label="Tarjeta de crédito/débito"
+                          disabled
+                        />
+                        <FormControlLabel
+                          value="paypal"
+                          control={<Radio />}
+                          label="Paypal"
+                          disabled
+                        />
+                        <FormControlLabel
+                          value="other"
+                          control={<Radio />}
+                          label="Otro"
+                          disabled
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                    <Box>
+                      <DateTimePicker
+                        label="Fecha y hora de entrega"
+                        disablePast
+                        format="dd-MM-yyyy HH:mm"
+                        value={newDeliveryDate}
+                        onError={(error) => {
+                          error
+                            ? notifyError(
+                                'Revisa el valor ingresado en la fecha y hora de entrega'
+                              )
+                            : null;
+                          setAlertMessageDate('Verifica la fecha de entrega');
+                        }}
+                        onChange={handleChangeDate}
                       />
-                      <FormControlLabel
-                        value="credit/debit card"
-                        control={<Radio />}
-                        label="Tarjeta de crédito/débito"
-                        disabled
-                      />
-                      <FormControlLabel
-                        value="paypal"
-                        control={<Radio />}
-                        label="Paypal"
-                        disabled
-                      />
-                      <FormControlLabel
-                        value="other"
-                        control={<Radio />}
-                        label="Otro"
-                        disabled
-                      />
-                    </RadioGroup>
-                  </FormControl>
+                      {alertMessageDate && (
+                        <Typography sx={{ color: 'red' }}>
+                          {alertMessageDate}
+                        </Typography>
+                      )}
+                    </Box>
+                  </Stack>
                   <TextField
                     type="text"
                     helperText="Número interior de la vivienda, número de teléfono adicional, persona que recibe, referencias, etc"
@@ -310,6 +336,40 @@ export default function AdminSite() {
                     autoFocus
                     disabled={loadingState}
                   />
+                  <TextField
+                    type="number"
+                    value={receivedMoneyField}
+                    helperText="Dinero recibido (antes de dar cambio)"
+                    id="received-money"
+                    label="Dinero recibido del cliente (antes de dar cambio)"
+                    name="received-money"
+                    autoFocus
+                    onChange={handleChangeReceivedMoney}
+                    disabled={loadingState}
+                  />
+                  {clientBalance === 0 && (
+                    <Typography variant="h6">
+                      El cliente ha pagado el total de la cuenta
+                    </Typography>
+                  )}
+                  {clientBalance > 0 && (
+                    <Typography variant="h6" sx={{ color: 'green' }}>
+                      No olvides dar cambio al cliente:{' '}
+                      {new Intl.NumberFormat('es-MX', {
+                        style: 'currency',
+                        currency: 'MXN',
+                      }).format(clientBalance)}
+                    </Typography>
+                  )}
+                  {clientBalance < 0 && (
+                    <Typography variant="h6" sx={{ color: 'red' }}>
+                      Recuerda al cliente que queda pendiente por pagar:{' '}
+                      {new Intl.NumberFormat('es-MX', {
+                        style: 'currency',
+                        currency: 'MXN',
+                      }).format(clientBalance * -1)}
+                    </Typography>
+                  )}
                   <Typography sx={{ color: 'red' }}>
                     Somos una sucursal localizada en la ciudad de Puebla. Las
                     entregas se hacen dentro de la zona metropolitana y sus
@@ -342,7 +402,7 @@ export default function AdminSite() {
               </Box>
             </>
           )}
-          {uiState === 'Success' && (
+          {uiState === UiStates.CREATED && (
             <Stack className={`flex flex-col items-center`} spacing={3}>
               <Typography>Orden realizada con éxito</Typography>
               <CheckCircleIcon sx={{ color: 'green' }} />
@@ -350,6 +410,12 @@ export default function AdminSite() {
                 <Link href="/">Ir a inicio</Link>
               </Button>
             </Stack>
+          )}
+
+          {uiState === UiStates.NO_ITEMS && (
+            <Typography variant="h3">
+              No puedes crear pedidos si no tienes items en tu carrito
+            </Typography>
           )}
         </Container>
         <Footer />
