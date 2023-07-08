@@ -35,6 +35,7 @@ export const authOptions: NextAuthOptions = {
         if (credentials) {
           const res = await login(credentials?.username, credentials?.password);
           if (res.error) {
+            console.log(res);
             const errorhelperText = res.helperText;
             if (
               errorhelperText ===
@@ -48,6 +49,14 @@ export const authOptions: NextAuthOptions = {
               )
                 throw new Error(JSON.stringify(errorInfo.data.message));
               return null;
+            } else if (
+              errorhelperText?.includes(
+                'The request was made but no response was received'
+              )
+            ) {
+              throw new Error(
+                'Estamos teneiendo problemas temporalmente. Por favor contacta a soporte.'
+              );
             }
             return null;
           } else {
