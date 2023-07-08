@@ -46,8 +46,8 @@ export default function PointOfSale() {
         actions: 'No sé',
       }));
       const newColumns: GridColDef[] = [
-        { field: 'name', headerName: 'Nombre', width: 150 },
-        { field: 'persons', headerName: 'Personas', width: 150 },
+        { field: 'name', headerName: 'Nombre', width: 300 },
+        { field: 'persons', headerName: 'Personas', width: 70 },
         {
           field: 'variant',
           headerName: 'Presentación',
@@ -60,7 +60,7 @@ export default function PointOfSale() {
             );
           },
         },
-        { field: 'price', headerName: 'Precio', width: 150 },
+        { field: 'price', headerName: 'Precio', width: 80 },
         { field: 'category', headerName: 'Categoría', width: 150 },
         {
           field: 'actions',
