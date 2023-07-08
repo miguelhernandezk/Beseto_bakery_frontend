@@ -35,7 +35,6 @@ export const authOptions: NextAuthOptions = {
         if (credentials) {
           const res = await login(credentials?.username, credentials?.password);
           if (res.error) {
-            console.log(res);
             const errorhelperText = res.helperText;
             if (
               errorhelperText ===
