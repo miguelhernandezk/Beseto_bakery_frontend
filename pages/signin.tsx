@@ -46,7 +46,6 @@ export default function SignIn() {
         signIn('credentials', {
           username: email,
           password: password,
-          callbackUrl: '/',
         });
         setLoadingState(false);
       }

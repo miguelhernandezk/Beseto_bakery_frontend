@@ -15,6 +15,8 @@ import '../styles/globals.css';
 import { AppProps } from 'next/app';
 import AppContext from '../context/AppContext';
 import useSharedState from '../hooks/useSharedState';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const theme = createTheme({
   palette: {
@@ -46,6 +48,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar
+                newestOnTop
+              />
               <CssBaseline />
               <Component {...pageProps} />
             </ThemeProvider>

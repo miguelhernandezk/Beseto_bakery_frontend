@@ -72,7 +72,10 @@ function LoginLogout() {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>
-                <Link href="/admin">Panel de administración</Link>
+                <Link href="/admin">Agregar pasteles</Link>
+              </MenuItem>
+              <MenuItem>
+                <Link href="/admin/point-of-sale">Punto de venta</Link>
               </MenuItem>
             </Menu>
           </>

@@ -22,6 +22,7 @@ const useSharedState = () => {
     } else {
       newCartDto.push({ product: productId, amount });
     }
+
     const updatedCartResponse = await updateCart(token, newCartDto);
     if (updatedCartResponse.error) {
       notifyError('No pudimos actualizar tu carrito');
