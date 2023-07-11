@@ -123,6 +123,7 @@ export default function PointOfSale() {
             {rows && columns && (
               <div style={{ height: 300, width: '100%' }}>
                 <DataGrid
+                  autoHeight
                   rows={rows}
                   columns={columns}
                   rowHeight={60}
